@@ -252,16 +252,6 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                   <span className="font-bold text-green-600">{churnSegments.low}</span>
                 </div>
               </div>
-
-              <div className="p-4 bg-red-50 rounded-lg">
-                <h4 className="font-semibold text-red-800 mb-2">Action Required</h4>
-                <p className="text-sm text-red-700">
-                  {churnSegments.high} customers need immediate retention campaigns
-                </p>
-                <p className="text-xs text-red-600 mt-1">
-                  ${totalAtRiskRevenue.toLocaleString()} revenue at risk
-                </p>
-              </div>
             </div>
 
             {/* Churn Risk Over Time */}
@@ -303,6 +293,17 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                 </LineChart>
               </ResponsiveContainer>
             </div>
+          </div>
+          
+          {/* Action Required Section - Moved below the chart */}
+          <div className="mt-6 p-4 bg-red-50 rounded-lg">
+            <h4 className="font-semibold text-red-800 mb-2">Action Required</h4>
+            <p className="text-sm text-red-700">
+              {churnSegments.high} customers need immediate retention campaigns
+            </p>
+            <p className="text-xs text-red-600 mt-1">
+              ${totalAtRiskRevenue.toLocaleString()} revenue at risk
+            </p>
           </div>
         </CardContent>
       </Card>
