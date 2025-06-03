@@ -31,7 +31,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: "+12.5%",
       changeType: "positive" as const,
       icon: DollarSign,
-      bgColor: colors.success,
+      bgColor: "bg-theme-success",
       description: "Total sales revenue"
     },
     {
@@ -40,9 +40,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: "+8.3%",
       changeType: "positive" as const,
       icon: Users,
-      bgColor: colors.primary,
+      bgColor: "bg-theme-primary",
       badge: "ML Predicted",
-      badgeColor: colors.primary
+      badgeColor: "bg-theme-primary"
     },
     {
       title: "Churn Risk",
@@ -50,9 +50,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: `${Math.round((metrics.churnRiskPercentage / 100) * metrics.totalCustomers)} customers`,
       changeType: "negative" as const,
       icon: AlertTriangle,
-      bgColor: colors.danger,
+      bgColor: "bg-theme-danger",
       badge: "High Risk",
-      badgeColor: colors.danger
+      badgeColor: "bg-theme-danger"
     },
     {
       title: "Forecast Accuracy",
@@ -60,9 +60,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: "95% confidence",
       changeType: "neutral" as const,
       icon: TrendingUp,
-      bgColor: colors.secondary,
+      bgColor: "bg-theme-secondary",
       badge: "ML Model",
-      badgeColor: colors.secondary
+      badgeColor: "bg-theme-secondary"
     },
     {
       title: "Cross-sell Opportunities",
@@ -70,9 +70,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: `+$${(metrics.crossSellOpportunities * 45).toLocaleString()} potential`,
       changeType: "positive" as const,
       icon: Target,
-      bgColor: colors.accent,
+      bgColor: "bg-theme-accent",
       badge: "Revenue Boost",
-      badgeColor: colors.accent
+      badgeColor: "bg-theme-accent"
     }
   ];
 

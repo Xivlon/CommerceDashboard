@@ -93,6 +93,43 @@ export function useColorPalette() {
 
   useEffect(() => {
     localStorage.setItem('ml-dashboard-palette', currentPalette);
+    
+    // Update CSS custom properties
+    const root = document.documentElement;
+    const palette = colorPalettes[currentPalette];
+    
+    // Convert hex colors to HSL for CSS variables
+    const hexToHsl = (hex: string) => {
+      const r = parseInt(hex.slice(1, 3), 16) / 255;
+      const g = parseInt(hex.slice(3, 5), 16) / 255;
+      const b = parseInt(hex.slice(5, 7), 16) / 255;
+      
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h = 0, s = 0, l = (max + min) / 2;
+      
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      
+      return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+    };
+    
+    root.style.setProperty('--theme-primary', hexToHsl(palette.primary));
+    root.style.setProperty('--theme-secondary', hexToHsl(palette.secondary));
+    root.style.setProperty('--theme-accent', hexToHsl(palette.accent));
+    root.style.setProperty('--theme-success', hexToHsl(palette.success));
+    root.style.setProperty('--theme-warning', hexToHsl(palette.warning));
+    root.style.setProperty('--theme-danger', hexToHsl(palette.danger));
+    root.style.setProperty('--theme-info', hexToHsl(palette.info));
+    root.style.setProperty('--theme-neutral', hexToHsl(palette.neutral));
   }, [currentPalette]);
 
   const changePalette = (palette: ColorPalette) => {
