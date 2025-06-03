@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingUp, Package, ArrowUpRight, Target, ShoppingCart, DollarSign, RefreshCw, Download, Zap } from "lucide-react";
 import { getProductRecommendations, generateProductRecommendations, formatCurrency, formatPercentage, refreshAllData } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
+import { useColorPalette } from "@/hooks/use-color-palette";
 import type { ProductRecommendation } from "@shared/schema";
 
 interface ProductRecommendationsProps {
@@ -18,6 +19,7 @@ interface ProductRecommendationsProps {
 export function ProductRecommendations({ category, detailed = false }: ProductRecommendationsProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { getChartColors } = useColorPalette();
 
   const { data: recommendations = [], isLoading, error } = useQuery({
     queryKey: ['/api/recommendations/products', category],
@@ -297,7 +299,7 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
                       <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="confidence" fill="#3b82f6" />
+                      <Bar dataKey="confidence" fill={getChartColors()[0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

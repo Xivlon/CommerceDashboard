@@ -143,7 +143,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                 <Line 
                   type="monotone" 
                   dataKey="actual" 
-                  stroke="#3b82f6" 
+                  stroke={getChartColors()[0]} 
                   strokeWidth={2}
                   connectNulls={false}
                   name="Historical Revenue"
@@ -151,7 +151,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                 <Line 
                   type="monotone" 
                   dataKey="predicted" 
-                  stroke="#10b981" 
+                  stroke={getChartColors()[1]} 
                   strokeWidth={2}
                   strokeDasharray="5 5"
                   connectNulls={false}
