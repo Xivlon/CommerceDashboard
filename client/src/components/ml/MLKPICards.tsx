@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Users, AlertTriangle, TrendingUp, Target } from "lucide-react";
+import { useColorPalette } from "@/hooks/use-color-palette";
 import type { DashboardMetrics } from "@shared/schema";
 
 interface MLKPICardsProps {
@@ -8,6 +9,7 @@ interface MLKPICardsProps {
 }
 
 export function MLKPICards({ metrics }: MLKPICardsProps) {
+  const { colors } = useColorPalette();
   if (!metrics) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
@@ -29,7 +31,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: "+12.5%",
       changeType: "positive" as const,
       icon: DollarSign,
-      bgColor: "bg-green-500",
+      bgColor: colors.success,
       description: "Total sales revenue"
     },
     {
@@ -38,9 +40,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: "+8.3%",
       changeType: "positive" as const,
       icon: Users,
-      bgColor: "bg-blue-500",
+      bgColor: colors.primary,
       badge: "ML Predicted",
-      badgeColor: "bg-blue-100 text-blue-800"
+      badgeColor: colors.primary
     },
     {
       title: "Churn Risk",
@@ -48,9 +50,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: `${Math.round((metrics.churnRiskPercentage / 100) * metrics.totalCustomers)} customers`,
       changeType: "negative" as const,
       icon: AlertTriangle,
-      bgColor: "bg-red-500",
+      bgColor: colors.danger,
       badge: "High Risk",
-      badgeColor: "bg-red-100 text-red-800"
+      badgeColor: colors.danger
     },
     {
       title: "Forecast Accuracy",
@@ -58,9 +60,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: "95% confidence",
       changeType: "neutral" as const,
       icon: TrendingUp,
-      bgColor: "bg-purple-500",
+      bgColor: colors.secondary,
       badge: "ML Model",
-      badgeColor: "bg-purple-100 text-purple-800"
+      badgeColor: colors.secondary
     },
     {
       title: "Cross-sell Opportunities",
