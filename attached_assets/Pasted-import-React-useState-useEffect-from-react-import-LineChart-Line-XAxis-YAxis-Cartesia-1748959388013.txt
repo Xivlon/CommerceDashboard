@@ -1,0 +1,357 @@
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, ResponsiveContainer } from 'recharts';
+import { ShoppingCart, DollarSign, Users, TrendingUp, Package, Star, Filter, Download, RefreshCw } from 'lucide-react';
+
+const EcommerceAnalyticsDashboard = () => {
+  const [selectedPeriod, setSelectedPeriod] = useState('7d');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Simulated data generation (representing SQL query results)
+  const generateRevenueData = () => {
+    const days = selectedPeriod === '7d' ? 7 : selectedPeriod === '30d' ? 30 : 90;
+    return Array.from({ length: days }, (_, i) => ({
+      date: new Date(Date.now() - (days - i - 1) * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      revenue: Math.floor(Math.random() * 50000 + 30000),
+      orders: Math.floor(Math.random() * 200 + 100),
+      customers: Math.floor(Math.random() * 150 + 80),
+      conversion: (Math.random() * 3 + 2).toFixed(2)
+    }));
+  };
+
+  const [revenueData, setRevenueData] = useState(generateRevenueData());
+
+  const productData = [
+    { name: 'Electronics', sales: 145000, orders: 1234, growth: 12.5 },
+    { name: 'Clothing', sales: 98000, orders: 892, growth: 8.3 },
+    { name: 'Home & Garden', sales: 76000, orders: 567, growth: -2.1 },
+    { name: 'Sports', sales: 54000, orders: 445, growth: 15.7 },
+    { name: 'Books', sales: 32000, orders: 234, growth: 5.2 }
+  ];
+
+  const customerSegmentData = [
+    { name: 'New Customers', value: 35, color: '#8b5cf6' },
+    { name: 'Returning', value: 45, color: '#06b6d4' },
+    { name: 'VIP', value: 20, color: '#10b981' }
+  ];
+
+  const topProducts = [
+    { name: 'Wireless Headphones', revenue: 24500, units: 245, rating: 4.8 },
+    { name: 'Smart Watch', revenue: 19800, units: 132, rating: 4.6 },
+    { name: 'Laptop Stand', revenue: 15600, units: 312, rating: 4.7 },
+    { name: 'Gaming Mouse', revenue: 12300, units: 205, rating: 4.5 },
+    { name: 'Phone Case', revenue: 8900, units: 445, rating: 4.4 }
+  ];
+
+  const trafficSources = [
+    { source: 'Organic Search', visitors: 45000, conversion: 3.2 },
+    { source: 'Direct', visitors: 32000, conversion: 4.1 },
+    { source: 'Social Media', visitors: 28000, conversion: 2.8 },
+    { source: 'Email', visitors: 15000, conversion: 5.5 },
+    { source: 'Paid Ads', visitors: 12000, conversion: 2.1 }
+  ];
+
+  // Simulate data refresh
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setRevenueData(generateRevenueData());
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  // Update data when period changes
+  useEffect(() => {
+    setRevenueData(generateRevenueData());
+  }, [selectedPeriod]);
+
+  // Calculate KPIs
+  const totalRevenue = revenueData.reduce((sum, day) => sum + day.revenue, 0);
+  const totalOrders = revenueData.reduce((sum, day) => sum + day.orders, 0);
+  const avgOrderValue = (totalRevenue / totalOrders).toFixed(2);
+  const totalCustomers = revenueData.reduce((sum, day) => sum + day.customers, 0);
+
+  const KPICard = ({ icon: Icon, title, value, change, color }) => (
+    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-500 text-sm font-medium">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          {change && (
+            <p className={`text-sm mt-2 flex items-center ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <TrendingUp className="w-4 h-4 mr-1" />
+              {change >= 0 ? '+' : ''}{change}%
+            </p>
+          )}
+        </div>
+        <div className={`${color} p-3 rounded-full`}>
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">E-commerce Analytics Dashboard</h1>
+            <p className="text-gray-600">Real-time insights powered by SQL, Python & Tableau</p>
+          </div>
+          
+          <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
+            <select 
+              value={selectedPeriod} 
+              onChange={(e) => setSelectedPeriod(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="90d">Last 90 Days</option>
+            </select>
+            
+            <select 
+              value={selectedCategory} 
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Categories</option>
+              <option value="electronics">Electronics</option>
+              <option value="clothing">Clothing</option>
+              <option value="home">Home & Garden</option>
+            </select>
+            
+            <button 
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+            
+            <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              Export
+            </button>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <KPICard 
+            icon={DollarSign} 
+            title="Total Revenue" 
+            value={`$${(totalRevenue/1000).toFixed(1)}K`} 
+            change={12.5} 
+            color="bg-green-500" 
+          />
+          <KPICard 
+            icon={ShoppingCart} 
+            title="Total Orders" 
+            value={totalOrders.toLocaleString()} 
+            change={8.3} 
+            color="bg-blue-500" 
+          />
+          <KPICard 
+            icon={Users} 
+            title="Unique Customers" 
+            value={totalCustomers.toLocaleString()} 
+            change={15.7} 
+            color="bg-purple-500" 
+          />
+          <KPICard 
+            icon={TrendingUp} 
+            title="Avg Order Value" 
+            value={`$${avgOrderValue}`} 
+            change={-2.1} 
+            color="bg-orange-500" 
+          />
+        </div>
+
+        {/* Main Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Revenue Trend */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={revenueData}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']} />
+                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Product Categories */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Sales by Category</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={productData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Sales']} />
+                <Bar dataKey="sales" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Secondary Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Customer Segments */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer Segments</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={customerSegmentData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="value"
+                  label={({ name, value }) => `${name}: ${value}%`}
+                >
+                  {customerSegmentData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Orders vs Customers */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Orders vs Customers</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={revenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="orders" stroke="#06b6d4" strokeWidth={2} />
+                <Line type="monotone" dataKey="customers" stroke="#10b981" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Conversion Rate */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Conversion Rate</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <AreaChart data={revenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip formatter={(value) => [`${value}%`, 'Conversion Rate']} />
+                <Area type="monotone" dataKey="conversion" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Data Tables */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Top Products */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Products</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-2 font-medium text-gray-700">Product</th>
+                    <th className="text-right py-3 px-2 font-medium text-gray-700">Revenue</th>
+                    <th className="text-right py-3 px-2 font-medium text-gray-700">Units</th>
+                    <th className="text-right py-3 px-2 font-medium text-gray-700">Rating</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topProducts.map((product, index) => (
+                    <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-2 text-gray-900">{product.name}</td>
+                      <td className="py-3 px-2 text-right font-medium">${product.revenue.toLocaleString()}</td>
+                      <td className="py-3 px-2 text-right">{product.units}</td>
+                      <td className="py-3 px-2 text-right flex items-center justify-end">
+                        <Star className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" />
+                        {product.rating}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Traffic Sources */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Traffic Sources</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-2 font-medium text-gray-700">Source</th>
+                    <th className="text-right py-3 px-2 font-medium text-gray-700">Visitors</th>
+                    <th className="text-right py-3 px-2 font-medium text-gray-700">Conversion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trafficSources.map((source, index) => (
+                    <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-2 text-gray-900">{source.source}</td>
+                      <td className="py-3 px-2 text-right font-medium">{source.visitors.toLocaleString()}</td>
+                      <td className="py-3 px-2 text-right">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          source.conversion > 4 ? 'bg-green-100 text-green-800' : 
+                          source.conversion > 3 ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {source.conversion}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* SQL Query Display */}
+        <div className="mt-8 bg-gray-900 rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Latest SQL Query</h3>
+          <div className="bg-gray-800 rounded-lg p-4 overflow-x-auto">
+            <code className="text-green-400 text-sm font-mono">
+              {`SELECT 
+    DATE(order_date) as date,
+    SUM(total_amount) as revenue,
+    COUNT(DISTINCT order_id) as orders,
+    COUNT(DISTINCT customer_id) as customers,
+    ROUND(COUNT(DISTINCT order_id) * 100.0 / COUNT(DISTINCT session_id), 2) as conversion_rate
+FROM orders o
+JOIN sessions s ON o.session_id = s.session_id
+WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL ${selectedPeriod === '7d' ? '7' : selectedPeriod === '30d' ? '30' : '90'} DAY)
+${selectedCategory !== 'all' ? `AND category = '${selectedCategory}'` : ''}
+GROUP BY DATE(order_date)
+ORDER BY date;`}
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EcommerceAnalyticsDashboard;
