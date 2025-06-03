@@ -197,12 +197,12 @@ export default function Dashboard() {
           <TabsContent value="overview" className="space-y-8">
             {/* Overview combines all ML features */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <ProductRecommendations category={selectedCategory} />
               <CLVPrediction period={selectedPeriod} />
-              <SalesForecasting period={selectedPeriod} />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <SalesForecasting period={selectedPeriod} />
               <ChurnAnalysis period={selectedPeriod} />
-              <ProductRecommendations category={selectedCategory} />
             </div>
           </TabsContent>
 
