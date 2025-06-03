@@ -129,7 +129,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                 <div className="p-3 bg-green-50 rounded-lg">
                   <p className="text-sm text-gray-600">High Value</p>
                   <p className="text-lg font-bold text-green-600">{clvSegments.high}</p>
-                  <p className="text-xs text-gray-500">CLV > $2K</p>
+                  <p className="text-xs text-gray-500">CLV &gt; $2K</p>
                 </div>
                 <div className="p-3 bg-blue-50 rounded-lg">
                   <p className="text-sm text-gray-600">Medium Value</p>
@@ -138,8 +138,8 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                 </div>
                 <div className="p-3 bg-amber-50 rounded-lg">
                   <p className="text-sm text-gray-600">Low Value</p>
-                  <p class="text-lg font-bold text-amber-600">{clvSegments.low}</p>
-                  <p className="text-xs text-gray-500">CLV < $500</p>
+                  <p className="text-lg font-bold text-amber-600">{clvSegments.low}</p>
+                  <p className="text-xs text-gray-500">CLV &lt; $500</p>
                 </div>
               </div>
 

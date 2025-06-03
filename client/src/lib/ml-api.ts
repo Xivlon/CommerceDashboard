@@ -78,7 +78,7 @@ export async function getSalesMetrics(startDate?: Date, endDate?: Date): Promise
 }
 
 // Product recommendations API functions
-export async function getProductRecommendations(productId?: number, type?: string): Promise<ProductRecommendation[] | ProductWithRecommendations[]> {
+export async function getProductRecommendations(productId?: number, type?: string): Promise<ProductRecommendation[]> {
   let url = "/api/recommendations/products";
   const params = new URLSearchParams();
   

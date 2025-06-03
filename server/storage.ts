@@ -229,6 +229,7 @@ export class MemStorage implements IStorage {
       registrationDate: new Date(),
       totalSpent: customer.totalSpent || "0",
       orderCount: customer.orderCount || 0,
+      lastPurchaseDate: customer.lastPurchaseDate || null,
       segment: customer.segment || 'new',
       churnRisk: customer.churnRisk || 'low',
       isActive: customer.isActive ?? true,
@@ -349,6 +350,10 @@ export class MemStorage implements IStorage {
       ...prediction,
       id,
       createdAt: new Date(),
+      predictedValue: prediction.predictedValue || null,
+      confidence: prediction.confidence || null,
+      features: prediction.features || null,
+      expiresAt: prediction.expiresAt || null,
     };
     this.mlPredictions.set(id, newPrediction);
     return newPrediction;
@@ -382,7 +387,12 @@ export class MemStorage implements IStorage {
 
   async createSalesMetric(metric: InsertSalesMetric): Promise<SalesMetric> {
     const id = this.currentSalesMetricId++;
-    const newMetric: SalesMetric = { ...metric, id };
+    const newMetric: SalesMetric = { 
+      ...metric, 
+      id,
+      avgOrderValue: metric.avgOrderValue || null,
+      conversionRate: metric.conversionRate || null,
+    };
     this.salesMetrics.set(id, newMetric);
     return newMetric;
   }
@@ -406,6 +416,8 @@ export class MemStorage implements IStorage {
       ...recommendation,
       id,
       createdAt: new Date(),
+      support: recommendation.support || null,
+      lift: recommendation.lift || null,
     };
     this.productRecommendations.set(id, newRecommendation);
     return newRecommendation;

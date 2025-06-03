@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingBag, ArrowRight, Target, TrendingUp, Package } from "lucide-react";
-import { getProductRecommendations } from "@/lib/ml-api";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { TrendingUp, Package, ArrowUpRight, Target, ShoppingCart, DollarSign } from "lucide-react";
+import { getProductRecommendations, generateProductRecommendations, formatCurrency, formatPercentage } from "@/lib/ml-api";
+import type { ProductRecommendation } from "@shared/schema";
 
 interface ProductRecommendationsProps {
   category: string;
@@ -13,10 +15,8 @@ interface ProductRecommendationsProps {
 }
 
 export function ProductRecommendations({ category, detailed = false }: ProductRecommendationsProps) {
-  const { toast } = useToast();
-
-  const { data: recommendations, isLoading } = useQuery({
-    queryKey: ["/api/recommendations/products", category],
+  const { data: recommendations = [], isLoading, error } = useQuery({
+    queryKey: ['/api/recommendations/products', category],
     queryFn: () => getProductRecommendations(),
   });
 
@@ -24,14 +24,75 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Product Recommendation Insights</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Product Recommendations
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="animate-pulse space-y-4">
-            <div className="h-64 bg-gray-200 rounded"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-16 bg-gray-200 rounded animate-pulse" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Product Recommendations
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-500">Failed to load recommendations</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const crossSellRecommendations = recommendations.filter(r => r.recommendationType === 'cross_sell');
+  const upSellRecommendations = recommendations.filter(r => r.recommendationType === 'up_sell');
+
+  if (!detailed) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Product Recommendations
+          </CardTitle>
+          <CardDescription>AI-powered cross-sell and up-sell opportunities</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">{crossSellRecommendations.length}</div>
+                <div className="text-sm text-gray-600">Cross-sell Opportunities</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{upSellRecommendations.length}</div>
+                <div className="text-sm text-gray-600">Up-sell Opportunities</div>
+              </div>
+            </div>
+
             <div className="space-y-2">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-4 bg-gray-200 rounded"></div>
+              {recommendations.slice(0, 3).map((rec, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</p>
+                    <p className="text-sm text-gray-600">{rec.recommendationType.replace('_', '-')} opportunity</p>
+                  </div>
+                  <Badge variant={rec.recommendationType === 'cross_sell' ? 'default' : 'secondary'}>
+                    {formatPercentage(parseFloat(rec.confidence) * 100)}
+                  </Badge>
+                </div>
               ))}
             </div>
           </div>
@@ -40,307 +101,224 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
     );
   }
 
-  if (!recommendations || recommendations.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Product Recommendation Insights</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-            <Package className="h-16 w-16 mb-4" />
-            <p className="text-lg font-medium">No recommendation data available</p>
-            <p className="text-sm">Product recommendations will appear here once sufficient purchase data is available.</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Group recommendations by type
-  const crossSellRecommendations = recommendations.filter(rec => rec.recommendationType === 'cross_sell').slice(0, detailed ? 10 : 5);
-  const upSellRecommendations = recommendations.filter(rec => rec.recommendationType === 'up_sell').slice(0, detailed ? 10 : 5);
-
-  const handleCreateCampaign = (productId: number, recommendedProductId: number) => {
-    toast({
-      title: "Campaign Created",
-      description: `Marketing campaign created for product recommendation pair.`,
-    });
-  };
-
-  const avgConfidence = recommendations.length > 0 
-    ? recommendations.reduce((sum, rec) => sum + parseFloat(rec.confidence), 0) / recommendations.length
-    : 0;
-
-  // Mock product names for display (in real app, these would come from product data)
-  const getProductName = (id: number) => {
-    const products = {
-      1: 'Wireless Headphones',
-      2: 'Phone Case',
-      3: 'Gaming Laptop',
-      4: 'Gaming Mouse',
-      5: 'Keyboard',
-      6: 'Memory Card',
-      7: 'Camera Bag',
-      8: 'Laptop Stand',
-      9: 'External Monitor',
-      10: 'Wireless Charger'
-    };
-    return products[id as keyof typeof products] || `Product ${id}`;
-  };
+  const chartData = recommendations.slice(0, 10).map(rec => ({
+    name: `P${rec.productId} → P${rec.recommendedProductId}`,
+    confidence: parseFloat(rec.confidence) * 100,
+    type: rec.recommendationType,
+  }));
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Product Recommendation Insights</CardTitle>
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              Association Rules Confidence: {(avgConfidence * 100).toFixed(1)}%
-            </Badge>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Product Recommendation Analytics
+          </CardTitle>
+          <CardDescription>
+            Detailed analysis of cross-sell and up-sell opportunities
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Cross-sell Opportunities */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <ShoppingBag className="h-5 w-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Top Cross-sell Opportunities</h3>
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="cross-sell">Cross-sell</TabsTrigger>
+              <TabsTrigger value="up-sell">Up-sell</TabsTrigger>
+              <TabsTrigger value="analysis">Analysis</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <ShoppingCart className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm font-medium">Total Recommendations</span>
+                    </div>
+                    <div className="text-2xl font-bold">{recommendations.length}</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                      <span className="text-sm font-medium">Avg Confidence</span>
+                    </div>
+                    <div className="text-2xl font-bold">
+                      {formatPercentage(
+                        recommendations.reduce((sum, r) => sum + parseFloat(r.confidence), 0) / recommendations.length * 100
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Target className="h-4 w-4 text-purple-500" />
+                      <span className="text-sm font-medium">High Confidence</span>
+                    </div>
+                    <div className="text-2xl font-bold">
+                      {recommendations.filter(r => parseFloat(r.confidence) > 0.7).length}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              
-              {crossSellRecommendations.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No cross-sell opportunities identified</p>
-                  <p className="text-sm">More data needed for analysis</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {crossSellRecommendations.map((rec, index) => (
-                    <div key={index} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
-                            <ShoppingBag className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-gray-900">{getProductName(rec.productId)}</p>
-                            <p className="text-sm text-gray-500">Primary product</p>
-                          </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recommendation Confidence Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="confidence" fill="#3b82f6" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="cross-sell" className="space-y-4">
+              <div className="space-y-3">
+                {crossSellRecommendations.slice(0, 10).map((rec, index) => (
+                  <Card key={index}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</h4>
+                          <p className="text-sm text-gray-600">Cross-sell opportunity</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-medium text-green-600">
-                            +${(rec.coOccurrenceCount * 45).toLocaleString()}
+                          <Badge variant="default">{formatPercentage(parseFloat(rec.confidence) * 100)}</Badge>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Co-occurrence: {rec.coOccurrenceCount}
                           </p>
-                          <p className="text-xs text-gray-500">Revenue potential</p>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center gap-2 mb-3">
-                        <ArrowRight className="w-4 h-4 text-gray-400" />
-                        <p className="text-sm text-gray-600">Frequently bought with:</p>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
-                          {getProductName(rec.recommendedProductId)} ({(parseFloat(rec.confidence) * 100).toFixed(0)}%)
-                        </Badge>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs">
-                            {rec.lift}x Lift
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {(parseFloat(rec.support || '0') * 100).toFixed(0)}% Support
-                          </Badge>
-                        </div>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="text-xs text-blue-600 hover:text-blue-800"
-                          onClick={() => handleCreateCampaign(rec.productId, rec.recommendedProductId)}
-                        >
-                          Create Campaign
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Up-sell Analysis */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingUp className="h-5 w-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Up-sell Recommendations</h3>
+                      <Progress value={parseFloat(rec.confidence) * 100} className="mt-2" />
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              
-              {upSellRecommendations.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No up-sell opportunities identified</p>
-                  <p className="text-sm">More data needed for analysis</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {upSellRecommendations.map((rec, index) => (
-                    <div key={index} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center justify-between mb-2">
+            </TabsContent>
+
+            <TabsContent value="up-sell" className="space-y-4">
+              <div className="space-y-3">
+                {upSellRecommendations.slice(0, 10).map((rec, index) => (
+                  <Card key={index}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="font-medium text-gray-900">{getProductName(rec.productId)}</h4>
-                          <p className="text-sm text-gray-600">
-                            → <span className="font-medium">{getProductName(rec.recommendedProductId)}</span>
+                          <h4 className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</h4>
+                          <p className="text-sm text-gray-600">Up-sell opportunity</p>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="secondary">{formatPercentage(parseFloat(rec.confidence) * 100)}</Badge>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Co-occurrence: {rec.coOccurrenceCount}
                           </p>
                         </div>
-                        <span className="text-sm font-bold text-purple-600">
-                          +${(parseFloat(rec.confidence) * 300).toFixed(0)}
-                        </span>
                       </div>
-                      <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                        <span>{rec.coOccurrenceCount} target customers</span>
-                        <span className="font-medium text-green-600">
-                          {(parseFloat(rec.confidence) * 100).toFixed(0)}% confidence
-                        </span>
+                      <Progress value={parseFloat(rec.confidence) * 100} className="mt-2" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="analysis" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Recommendation Types</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span>Cross-sell</span>
+                        <Badge variant="default">{crossSellRecommendations.length}</Badge>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline" className="text-xs">
-                          {Math.floor(Math.random() * 4 + 3)} months avg timing
-                        </Badge>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="text-xs text-purple-600 hover:text-purple-800"
-                          onClick={() => handleCreateCampaign(rec.productId, rec.recommendedProductId)}
-                        >
-                          Target Customers
-                        </Button>
+                      <div className="flex justify-between items-center">
+                        <span>Up-sell</span>
+                        <Badge variant="secondary">{upSellRecommendations.length}</Badge>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Confidence Levels</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span>High (&gt;70%)</span>
+                        <Badge variant="default">
+                          {recommendations.filter(r => parseFloat(r.confidence) > 0.7).length}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span>Medium (50-70%)</span>
+                        <Badge variant="secondary">
+                          {recommendations.filter(r => parseFloat(r.confidence) >= 0.5 && parseFloat(r.confidence) <= 0.7).length}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span>Low (&lt;50%)</span>
+                        <Badge variant="outline">
+                          {recommendations.filter(r => parseFloat(r.confidence) < 0.5).length}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Performance Metrics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                      <div className="text-lg font-bold text-blue-600">
+                        {formatPercentage(
+                          recommendations.reduce((sum, r) => sum + parseFloat(r.confidence), 0) / recommendations.length * 100
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-600">Avg Confidence</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-green-600">
+                        {Math.round(recommendations.reduce((sum, r) => sum + r.coOccurrenceCount, 0) / recommendations.length)}
+                      </div>
+                      <div className="text-sm text-gray-600">Avg Co-occurrence</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-purple-600">
+                        {formatPercentage(recommendations.filter(r => parseFloat(r.confidence) > 0.7).length / recommendations.length * 100)}
+                      </div>
+                      <div className="text-sm text-gray-600">High Quality Rate</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-amber-600">
+                        {recommendations.length > 0 ? Math.max(...recommendations.map(r => r.coOccurrenceCount)) : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Max Co-occurrence</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
-
-      {detailed && recommendations.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Product Affinity Matrix</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <div className="grid grid-cols-6 gap-1 min-w-96">
-                {/* Headers */}
-                <div className="p-2 text-xs font-medium text-gray-600"></div>
-                <div className="p-2 text-xs font-medium text-gray-600 text-center">Electronics</div>
-                <div className="p-2 text-xs font-medium text-gray-600 text-center">Accessories</div>
-                <div className="p-2 text-xs font-medium text-gray-600 text-center">Gaming</div>
-                <div className="p-2 text-xs font-medium text-gray-600 text-center">Audio</div>
-                <div className="p-2 text-xs font-medium text-gray-600 text-center">Mobile</div>
-                
-                {/* Rows with affinity scores */}
-                <div className="p-2 text-xs font-medium text-gray-600">Electronics</div>
-                <div className="p-2 bg-gray-200 text-xs text-center font-medium">1.0</div>
-                <div className="p-2 bg-green-300 text-xs text-center font-medium">0.8</div>
-                <div className="p-2 bg-green-400 text-xs text-center font-medium text-white">0.9</div>
-                <div className="p-2 bg-green-200 text-xs text-center font-medium">0.7</div>
-                <div className="p-2 bg-yellow-200 text-xs text-center font-medium">0.4</div>
-                
-                <div className="p-2 text-xs font-medium text-gray-600">Accessories</div>
-                <div className="p-2 bg-green-300 text-xs text-center font-medium">0.8</div>
-                <div className="p-2 bg-gray-200 text-xs text-center font-medium">1.0</div>
-                <div className="p-2 bg-green-200 text-xs text-center font-medium">0.6</div>
-                <div className="p-2 bg-green-200 text-xs text-center font-medium">0.5</div>
-                <div className="p-2 bg-green-400 text-xs text-center font-medium text-white">0.9</div>
-              </div>
-            </div>
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-green-400 rounded"></div>
-                  <span>Strong Affinity (0.8+)</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-green-200 rounded"></div>
-                  <span>Moderate Affinity (0.5-0.8)</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-yellow-200 rounded"></div>
-                  <span>Weak Affinity (<0.5)</span>
-                </div>
-              </div>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                Export Matrix
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {detailed && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommendation Performance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product Pair</TableHead>
-                    <TableHead className="text-center">Type</TableHead>
-                    <TableHead className="text-center">Confidence</TableHead>
-                    <TableHead className="text-center">Support</TableHead>
-                    <TableHead className="text-center">Lift</TableHead>
-                    <TableHead className="text-right">Co-occurrences</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recommendations.slice(0, 10).map((rec, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{getProductName(rec.productId)}</span>
-                          <ArrowRight className="h-4 w-4 text-gray-400" />
-                          <span>{getProductName(rec.recommendedProductId)}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge 
-                          variant={rec.recommendationType === 'cross_sell' ? 'default' : 'secondary'}
-                          className={`text-xs ${
-                            rec.recommendationType === 'cross_sell' 
-                              ? 'bg-blue-100 text-blue-800' 
-                              : 'bg-purple-100 text-purple-800'
-                          }`}
-                        >
-                          {rec.recommendationType.replace('_', '-')}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {(parseFloat(rec.confidence) * 100).toFixed(1)}%
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {rec.support ? (parseFloat(rec.support) * 100).toFixed(1) : 'N/A'}%
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {rec.lift ? parseFloat(rec.lift).toFixed(1) : 'N/A'}x
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {rec.coOccurrenceCount}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
