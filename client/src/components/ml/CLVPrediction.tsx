@@ -223,8 +223,8 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <ResponsiveContainer width="100%" height={350}>
-                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <ResponsiveContainer width="100%" height={320}>
+                <PieChart margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
                   <Pie
                     data={pieData}
                     cx="50%"
@@ -246,7 +246,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                     verticalAlign="bottom" 
                     height={36}
                     wrapperStyle={{ 
-                      paddingTop: '20px',
+                      paddingTop: '8px',
                       fontSize: '14px',
                       lineHeight: '20px',
                       fontWeight: '500'
