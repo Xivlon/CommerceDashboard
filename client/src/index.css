@@ -1,0 +1,457 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 221 83% 53%; /* #2563eb - blue-600 */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+  --chart-1: 221 83% 53%; /* blue-600 */
+  --chart-2: 142 76% 36%; /* green-600 */
+  --chart-3: 262 83% 58%; /* purple-600 */
+  --chart-4: 43 96% 56%; /* yellow-500 */
+  --chart-5: 0 84% 60%; /* red-500 */
+  
+  /* ML Dashboard specific colors */
+  --ml-blue: 221 83% 53%; /* #2563eb */
+  --ml-purple: 262 83% 58%; /* #8b5cf6 */
+  --ml-green: 142 76% 36%; /* #10b981 */
+  --ml-orange: 43 96% 56%; /* #f59e0b */
+  --ml-cyan: 188 86% 53%; /* #06b6d4 */
+  --churn-red: 0 84% 60%; /* #ef4444 */
+  --prediction: 262 83% 58%; /* #8b5cf6 */
+  --confidence-high: 142 76% 36%; /* #10b981 */
+  --confidence-medium: 43 96% 56%; /* #f59e0b */
+  --confidence-low: 0 84% 60%; /* #ef4444 */
+  
+  /* Sidebar colors */
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 10.6% 64.9%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --chart-1: 221 83% 53%;
+  --chart-2: 142 76% 36%;
+  --chart-3: 262 83% 58%;
+  --chart-4: 43 96% 56%;
+  --chart-5: 0 84% 60%;
+  
+  /* ML Dashboard dark mode colors */
+  --ml-blue: 221 83% 53%;
+  --ml-purple: 262 83% 58%;
+  --ml-green: 142 76% 36%;
+  --ml-orange: 43 96% 56%;
+  --ml-cyan: 188 86% 53%;
+  --churn-red: 0 84% 60%;
+  --prediction: 262 83% 58%;
+  --confidence-high: 142 76% 36%;
+  --confidence-medium: 43 96% 56%;
+  --confidence-low: 0 84% 60%;
+  
+  /* Sidebar dark mode */
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 94.1%;
+  --sidebar-primary-foreground: 220.9 39.3% 11%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 10.6% 64.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  html {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  /* ML Dashboard specific utility classes */
+  .ml-gradient-bg {
+    @apply bg-gradient-to-br from-slate-50 to-blue-50;
+  }
+  
+  .dark .ml-gradient-bg {
+    @apply bg-gradient-to-br from-slate-900 to-blue-900;
+  }
+  
+  .ml-card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  .dark .ml-card {
+    @apply bg-slate-800;
+  }
+  
+  .ml-kpi-card {
+    @apply ml-card p-6;
+  }
+  
+  .ml-chart-container {
+    @apply ml-card p-6;
+  }
+  
+  .ml-table-container {
+    @apply ml-card p-6 overflow-x-auto;
+  }
+  
+  /* Confidence level indicators */
+  .confidence-high {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .dark .confidence-high {
+    @apply bg-green-900/20 text-green-400;
+  }
+  
+  .confidence-medium {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .dark .confidence-medium {
+    @apply bg-yellow-900/20 text-yellow-400;
+  }
+  
+  .confidence-low {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .dark .confidence-low {
+    @apply bg-red-900/20 text-red-400;
+  }
+  
+  /* Churn risk indicators */
+  .churn-high {
+    @apply bg-red-50 text-red-800 border border-red-200;
+  }
+  
+  .dark .churn-high {
+    @apply bg-red-900/20 text-red-400 border-red-800;
+  }
+  
+  .churn-medium {
+    @apply bg-yellow-50 text-yellow-800 border border-yellow-200;
+  }
+  
+  .dark .churn-medium {
+    @apply bg-yellow-900/20 text-yellow-400 border-yellow-800;
+  }
+  
+  .churn-low {
+    @apply bg-green-50 text-green-800 border border-green-200;
+  }
+  
+  .dark .churn-low {
+    @apply bg-green-900/20 text-green-400 border-green-800;
+  }
+  
+  /* CLV segment indicators */
+  .clv-high {
+    @apply bg-emerald-100 text-emerald-800;
+  }
+  
+  .dark .clv-high {
+    @apply bg-emerald-900/20 text-emerald-400;
+  }
+  
+  .clv-medium {
+    @apply bg-blue-100 text-blue-800;
+  }
+  
+  .dark .clv-medium {
+    @apply bg-blue-900/20 text-blue-400;
+  }
+  
+  .clv-low {
+    @apply bg-orange-100 text-orange-800;
+  }
+  
+  .dark .clv-low {
+    @apply bg-orange-900/20 text-orange-400;
+  }
+  
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scale-in 0.2s ease-out;
+  }
+  
+  /* Loading states */
+  .loading-skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+  
+  .dark .loading-skeleton {
+    @apply bg-gray-700;
+  }
+  
+  /* Chart styling */
+  .recharts-cartesian-grid-horizontal line,
+  .recharts-cartesian-grid-vertical line {
+    @apply stroke-gray-200;
+  }
+  
+  .dark .recharts-cartesian-grid-horizontal line,
+  .dark .recharts-cartesian-grid-vertical line {
+    @apply stroke-gray-700;
+  }
+  
+  .recharts-tooltip-wrapper {
+    @apply drop-shadow-lg;
+  }
+  
+  .recharts-default-tooltip {
+    @apply bg-white border border-gray-200 rounded-lg shadow-lg;
+  }
+  
+  .dark .recharts-default-tooltip {
+    @apply bg-gray-800 border-gray-700;
+  }
+}
+
+@layer utilities {
+  /* Custom gradient backgrounds for ML features */
+  .bg-ml-gradient-blue {
+    background: linear-gradient(135deg, hsl(var(--ml-blue)) 0%, hsl(var(--ml-cyan)) 100%);
+  }
+  
+  .bg-ml-gradient-purple {
+    background: linear-gradient(135deg, hsl(var(--ml-purple)) 0%, hsl(var(--prediction)) 100%);
+  }
+  
+  .bg-ml-gradient-green {
+    background: linear-gradient(135deg, hsl(var(--ml-green)) 0%, hsl(var(--confidence-high)) 100%);
+  }
+  
+  .bg-ml-gradient-orange {
+    background: linear-gradient(135deg, hsl(var(--ml-orange)) 0%, hsl(var(--confidence-medium)) 100%);
+  }
+  
+  /* Text colors for ML features */
+  .text-ml-blue {
+    color: hsl(var(--ml-blue));
+  }
+  
+  .text-ml-purple {
+    color: hsl(var(--ml-purple));
+  }
+  
+  .text-ml-green {
+    color: hsl(var(--ml-green));
+  }
+  
+  .text-ml-orange {
+    color: hsl(var(--ml-orange));
+  }
+  
+  .text-ml-cyan {
+    color: hsl(var(--ml-cyan));
+  }
+  
+  .text-churn-red {
+    color: hsl(var(--churn-red));
+  }
+  
+  /* Background colors for ML features */
+  .bg-ml-blue {
+    background-color: hsl(var(--ml-blue));
+  }
+  
+  .bg-ml-purple {
+    background-color: hsl(var(--ml-purple));
+  }
+  
+  .bg-ml-green {
+    background-color: hsl(var(--ml-green));
+  }
+  
+  .bg-ml-orange {
+    background-color: hsl(var(--ml-orange));
+  }
+  
+  .bg-ml-cyan {
+    background-color: hsl(var(--ml-cyan));
+  }
+  
+  .bg-churn-red {
+    background-color: hsl(var(--churn-red));
+  }
+  
+  /* Border colors for ML features */
+  .border-ml-blue {
+    border-color: hsl(var(--ml-blue));
+  }
+  
+  .border-ml-purple {
+    border-color: hsl(var(--ml-purple));
+  }
+  
+  .border-ml-green {
+    border-color: hsl(var(--ml-green));
+  }
+  
+  .border-ml-orange {
+    border-color: hsl(var(--ml-orange));
+  }
+  
+  .border-churn-red {
+    border-color: hsl(var(--churn-red));
+  }
+}
+
+/* Keyframe animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Focus states for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .ml-card {
+    @apply shadow-none border border-gray-300;
+  }
+  
+  .ml-gradient-bg {
+    @apply bg-white;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ml-card {
+    @apply border-2 border-gray-900;
+  }
+  
+  .confidence-high,
+  .confidence-medium,
+  .confidence-low,
+  .churn-high,
+  .churn-medium,
+  .churn-low {
+    @apply border-2;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-scale-in,
+  .transition-all,
+  .transition-shadow,
+  .transition-colors {
+    animation: none;
+    transition: none;
+  }
+}
