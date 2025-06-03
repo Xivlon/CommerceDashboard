@@ -87,7 +87,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
                 <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
                 <div className="mt-2">
                   {card.badge ? (
-                    <Badge className="text-xs text-white" style={{ backgroundColor: card.badgeColor }}>
+                    <Badge className={`text-xs text-white ${card.badgeColor}`}>
                       {card.badge}
                     </Badge>
                   ) : (
@@ -103,7 +103,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
                   )}
                 </div>
               </div>
-              <div className="p-3 rounded-full" style={{ backgroundColor: card.bgColor }}>
+              <div className={`p-3 rounded-full ${card.bgColor}`}>
                 <card.icon className="w-6 h-6 text-white" />
               </div>
             </div>
