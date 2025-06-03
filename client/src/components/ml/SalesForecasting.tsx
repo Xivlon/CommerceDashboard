@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { TrendingUp, BarChart3, Target, Calendar } from "lucide-react";
 import { getSalesForecast, getSalesMetrics } from "@/lib/ml-api";
 import { useState } from "react";
+import { useColorPalette } from "@/hooks/use-color-palette";
 
 interface SalesForecastingProps {
   period: string;
@@ -14,6 +15,7 @@ interface SalesForecastingProps {
 
 export function SalesForecasting({ period, detailed = false }: SalesForecastingProps) {
   const [forecastDays, setForecastDays] = useState("30");
+  const { getChartColors } = useColorPalette();
 
   const { data: salesMetrics, isLoading: metricsLoading } = useQuery({
     queryKey: ["/api/sales-metrics", period],

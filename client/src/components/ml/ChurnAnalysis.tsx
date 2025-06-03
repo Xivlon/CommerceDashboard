@@ -7,6 +7,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { AlertTriangle, Users, Mail, Clock, TrendingDown, RefreshCw, Download, Bell, Zap } from "lucide-react";
 import { getCustomersWithPredictions, getChurnPredictions, analyzeChurnRisk, refreshAllData } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
+import { useColorPalette } from "@/hooks/use-color-palette";
 
 interface ChurnAnalysisProps {
   period: string;
@@ -16,6 +17,7 @@ interface ChurnAnalysisProps {
 export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { getChartColors } = useColorPalette();
 
   const { data: customers, isLoading: customersLoading } = useQuery({
     queryKey: ["/api/customers", { predictions: true, period }],
@@ -272,21 +274,21 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                   <Line 
                     type="monotone" 
                     dataKey="highRisk" 
-                    stroke="#ef4444" 
+                    stroke={getChartColors()[2]} 
                     strokeWidth={2}
                     name="High Risk"
                   />
                   <Line 
                     type="monotone" 
                     dataKey="mediumRisk" 
-                    stroke="#f59e0b" 
+                    stroke={getChartColors()[1]} 
                     strokeWidth={2}
                     name="Medium Risk"
                   />
                   <Line 
                     type="monotone" 
                     dataKey="lowRisk" 
-                    stroke="#10b981" 
+                    stroke={getChartColors()[0]} 
                     strokeWidth={2}
                     name="Low Risk"
                   />
