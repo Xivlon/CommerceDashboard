@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
-import { AlertTriangle, Users, Mail, Clock, TrendingDown } from "lucide-react";
-import { getCustomersWithPredictions, getChurnPredictions } from "@/lib/ml-api";
+import { AlertTriangle, Users, Mail, Clock, TrendingDown, RefreshCw, Download, Bell, Zap } from "lucide-react";
+import { getCustomersWithPredictions, getChurnPredictions, analyzeChurnRisk, refreshAllData } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
 
 interface ChurnAnalysisProps {

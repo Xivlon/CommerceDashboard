@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { TrendingUp, Users, Eye, Mail } from "lucide-react";
-import { getCustomersWithPredictions, getCLVPredictions } from "@/lib/ml-api";
+import { TrendingUp, Users, Eye, Mail, RefreshCw, Download, Zap } from "lucide-react";
+import { getCustomersWithPredictions, getCLVPredictions, generateAllPredictions, refreshAllData } from "@/lib/ml-api";
+import { useToast } from "@/hooks/use-toast";
 
 interface CLVPredictionProps {
   period: string;
@@ -13,6 +14,9 @@ interface CLVPredictionProps {
 }
 
 export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
   const { data: customers, isLoading: customersLoading } = useQuery({
     queryKey: ["/api/customers", { predictions: true, period }],
     queryFn: () => getCustomersWithPredictions(50, 0),
@@ -22,6 +26,85 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
     queryKey: ["/api/predictions/clv", period],
     queryFn: () => getCLVPredictions(),
   });
+
+  // Mutation for refreshing data
+  const refreshMutation = useMutation({
+    mutationFn: refreshAllData,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/customers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/predictions/clv"] });
+      toast({
+        title: "Data Refreshed",
+        description: "CLV predictions have been updated with latest data.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Refresh Failed",
+        description: "Unable to refresh data. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation for generating new predictions
+  const generateMutation = useMutation({
+    mutationFn: generateAllPredictions,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/customers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/predictions/clv"] });
+      toast({
+        title: "Predictions Generated",
+        description: "New CLV predictions have been generated successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Generation Failed",
+        description: "Unable to generate predictions. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Export functionality
+  const handleExport = () => {
+    if (!customers || customers.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No customer data available to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const csvData = customers.map(customer => ({
+      name: customer.name,
+      email: customer.email,
+      totalSpent: customer.totalSpent,
+      predictedCLV: customer.predictedCLV || 'N/A',
+      segment: customer.segment,
+      churnRisk: customer.churnRisk,
+      confidence: customer.clvPrediction?.confidence || 'N/A'
+    }));
+
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      "Name,Email,Total Spent,Predicted CLV,Segment,Churn Risk,Confidence\n" +
+      csvData.map(row => Object.values(row).join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "clv_predictions.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export Complete",
+      description: "CLV predictions exported successfully.",
+    });
+  };
 
   if (customersLoading || predictionsLoading) {
     return (
@@ -96,9 +179,45 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Customer Lifetime Value Distribution</CardTitle>
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              ML Confidence: {(modelAccuracy * 100).toFixed(1)}%
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                ML Confidence: {(modelAccuracy * 100).toFixed(1)}%
+              </Badge>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refreshMutation.mutate()}
+                disabled={refreshMutation.isPending}
+              >
+                {refreshMutation.isPending ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+                Refresh
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => generateMutation.mutate()}
+                disabled={generateMutation.isPending}
+              >
+                {generateMutation.isPending ? (
+                  <Zap className="h-4 w-4 animate-pulse" />
+                ) : (
+                  <Zap className="h-4 w-4" />
+                )}
+                Generate
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExport}
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
