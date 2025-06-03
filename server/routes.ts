@@ -144,8 +144,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const recommendations = await storage.getProductRecommendations(productId, type);
         res.json(recommendations);
       } else {
-        const productsWithRecs = await storage.getProductsWithRecommendations();
-        res.json(productsWithRecs);
+        // Get all product recommendations from storage
+        const allRecommendations: any[] = [];
+        for (let i = 1; i <= 10; i++) {
+          try {
+            const recs = await storage.getProductRecommendations(i);
+            allRecommendations.push(...recs);
+          } catch (e) {
+            // Continue if product doesn't exist
+          }
+        }
+        res.json(allRecommendations);
       }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch product recommendations" });

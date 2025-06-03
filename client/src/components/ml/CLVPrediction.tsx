@@ -225,12 +225,12 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                         <Badge 
                           variant="secondary" 
                           className={`${
-                            (customer.clvPrediction?.confidence || 0.8) > 0.9 
+                            parseFloat(customer.clvPrediction?.confidence || "0.8") > 0.9 
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-yellow-100 text-yellow-800'
                           }`}
                         >
-                          {((customer.clvPrediction?.confidence || 0.8) * 100).toFixed(0)}%
+                          {(parseFloat(customer.clvPrediction?.confidence || "0.8") * 100).toFixed(0)}%
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">

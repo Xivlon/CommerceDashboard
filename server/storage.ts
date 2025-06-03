@@ -172,8 +172,72 @@ export class MemStorage implements IStorage {
       this.products.set(product.id, product);
     });
 
+    // Initialize sample product recommendations
+    const sampleRecommendations: ProductRecommendation[] = [
+      {
+        id: 1,
+        productId: 1,
+        recommendedProductId: 2,
+        recommendationType: "cross_sell",
+        confidence: "0.85",
+        support: "0.12",
+        lift: "2.4",
+        coOccurrenceCount: 45,
+        createdAt: new Date()
+      },
+      {
+        id: 2,
+        productId: 1,
+        recommendedProductId: 3,
+        recommendationType: "up_sell",
+        confidence: "0.72",
+        support: "0.08",
+        lift: "1.8",
+        coOccurrenceCount: 32,
+        createdAt: new Date()
+      },
+      {
+        id: 3,
+        productId: 2,
+        recommendedProductId: 1,
+        recommendationType: "cross_sell",
+        confidence: "0.91",
+        support: "0.15",
+        lift: "3.1",
+        coOccurrenceCount: 68,
+        createdAt: new Date()
+      },
+      {
+        id: 4,
+        productId: 2,
+        recommendedProductId: 3,
+        recommendationType: "cross_sell",
+        confidence: "0.67",
+        support: "0.09",
+        lift: "1.5",
+        coOccurrenceCount: 28,
+        createdAt: new Date()
+      },
+      {
+        id: 5,
+        productId: 3,
+        recommendedProductId: 1,
+        recommendationType: "up_sell",
+        confidence: "0.78",
+        support: "0.11",
+        lift: "2.2",
+        coOccurrenceCount: 41,
+        createdAt: new Date()
+      }
+    ];
+
+    sampleRecommendations.forEach(rec => {
+      this.productRecommendations.set(rec.id, rec);
+    });
+
     this.currentCustomerId = 4;
     this.currentProductId = 4;
+    this.currentProductRecommendationId = 6;
   }
 
   // User methods
