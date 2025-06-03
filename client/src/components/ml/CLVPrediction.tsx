@@ -7,6 +7,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Ba
 import { TrendingUp, Users, Eye, Mail, RefreshCw, Download, Zap } from "lucide-react";
 import { getCustomersWithPredictions, getCLVPredictions, generateAllPredictions, refreshAllData } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
+import { useColorPalette } from "@/hooks/use-color-palette";
 
 interface CLVPredictionProps {
   period: string;
@@ -16,6 +17,7 @@ interface CLVPredictionProps {
 export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { getChartColors } = useColorPalette();
 
   const { data: customers, isLoading: customersLoading } = useQuery({
     queryKey: ["/api/customers", { predictions: true, period }],
@@ -152,10 +154,11 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
     return acc;
   }, { high: 0, medium: 0, low: 0 });
 
+  const chartColors = getChartColors();
   const pieData = [
-    { name: 'High Value (>$2K)', value: clvSegments.high, color: '#10b981' },
-    { name: 'Medium Value ($500-$2K)', value: clvSegments.medium, color: '#3b82f6' },
-    { name: 'Low Value (<$500)', value: clvSegments.low, color: '#f59e0b' },
+    { name: 'High Value (>$2K)', value: clvSegments.high, color: chartColors[1] },
+    { name: 'Medium Value ($500-$2K)', value: clvSegments.medium, color: chartColors[0] },
+    { name: 'Low Value (<$500)', value: clvSegments.low, color: chartColors[2] },
   ];
 
   const barData = [

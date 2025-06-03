@@ -9,6 +9,7 @@ import { CLVPrediction } from "@/components/ml/CLVPrediction";
 import { ChurnAnalysis } from "@/components/ml/ChurnAnalysis";
 import { SalesForecasting } from "@/components/ml/SalesForecasting";
 import { ProductRecommendations } from "@/components/ml/ProductRecommendations";
+import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -106,6 +107,8 @@ export default function Dashboard() {
                 <SelectItem value="home">Home & Garden</SelectItem>
               </SelectContent>
             </Select>
+            
+            <ColorPaletteSelector />
             
             <Button 
               onClick={handleRefresh}
