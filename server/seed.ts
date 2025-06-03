@@ -130,25 +130,29 @@ async function seedDatabase() {
         customerId: insertedCustomers[1].id,
         orderDate: new Date('2024-02-15'),
         status: "completed",
-        totalAmount: "329.98"
+        totalAmount: "329.98",
+        itemCount: 2
       },
       {
         customerId: insertedCustomers[2].id,
         orderDate: new Date('2023-12-20'),
         status: "completed",
-        totalAmount: "179.98"
+        totalAmount: "179.98",
+        itemCount: 1
       },
       {
         customerId: insertedCustomers[3].id,
         orderDate: new Date('2024-03-01'),
         status: "completed",
-        totalAmount: "549.97"
+        totalAmount: "549.97",
+        itemCount: 3
       },
       {
         customerId: insertedCustomers[4].id,
         orderDate: new Date('2024-01-25'),
         status: "completed",
-        totalAmount: "229.98"
+        totalAmount: "229.98",
+        itemCount: 2
       }
     ];
 
@@ -314,17 +318,15 @@ async function seedDatabase() {
   }
 }
 
-// Run the seeding if this file is executed directly
-if (require.main === module) {
-  seedDatabase()
-    .then(() => {
-      console.log("Seeding completed");
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error("Seeding failed:", error);
-      process.exit(1);
-    });
-}
+// Run the seeding
+seedDatabase()
+  .then(() => {
+    console.log("Seeding completed");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Seeding failed:", error);
+    process.exit(1);
+  });
 
 export { seedDatabase };
