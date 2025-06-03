@@ -223,22 +223,34 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
+              <ResponsiveContainer width="100%" height={350}>
+                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <Pie
                     data={pieData}
                     cx="50%"
                     cy="50%"
-                    outerRadius={100}
+                    outerRadius={80}
+                    innerRadius={0}
                     dataKey="value"
-                    label={({ name, value }) => `${name}: ${value}`}
+                    label={false}
                   >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip />
-                  <Legend />
+                  <Tooltip 
+                    formatter={(value, name) => [value, name]}
+                    labelStyle={{ color: '#374151' }}
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={36}
+                    wrapperStyle={{ 
+                      paddingTop: '20px',
+                      fontSize: '12px',
+                      lineHeight: '16px'
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
