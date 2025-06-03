@@ -70,9 +70,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
       change: `+$${(metrics.crossSellOpportunities * 45).toLocaleString()} potential`,
       changeType: "positive" as const,
       icon: Target,
-      bgColor: "bg-orange-500",
+      bgColor: colors.accent,
       badge: "Revenue Boost",
-      badgeColor: "bg-orange-100 text-orange-800"
+      badgeColor: colors.accent
     }
   ];
 
@@ -87,7 +87,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
                 <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
                 <div className="mt-2">
                   {card.badge ? (
-                    <Badge className={`text-xs ${card.badgeColor}`}>
+                    <Badge className="text-xs text-white" style={{ backgroundColor: card.badgeColor }}>
                       {card.badge}
                     </Badge>
                   ) : (
@@ -103,7 +103,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
                   )}
                 </div>
               </div>
-              <div className={`${card.bgColor} p-3 rounded-full`}>
+              <div className="p-3 rounded-full" style={{ backgroundColor: card.bgColor }}>
                 <card.icon className="w-6 h-6 text-white" />
               </div>
             </div>
