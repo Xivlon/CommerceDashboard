@@ -247,8 +247,9 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                     height={36}
                     wrapperStyle={{ 
                       paddingTop: '20px',
-                      fontSize: '12px',
-                      lineHeight: '16px'
+                      fontSize: '14px',
+                      lineHeight: '20px',
+                      fontWeight: '500'
                     }}
                   />
                 </PieChart>

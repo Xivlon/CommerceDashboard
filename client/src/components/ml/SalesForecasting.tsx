@@ -132,7 +132,12 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                     name === 'actual' ? 'Historical Data' : 'Forecast'
                   ]}
                 />
-                <Legend />
+                <Legend 
+                  wrapperStyle={{ 
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                />
                 <Line 
                   type="monotone" 
                   dataKey="actual" 

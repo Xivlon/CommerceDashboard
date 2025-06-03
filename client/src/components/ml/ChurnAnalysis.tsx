@@ -273,7 +273,12 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                   <XAxis dataKey="week" />
                   <YAxis />
                   <Tooltip />
-                  <Legend />
+                  <Legend 
+                    wrapperStyle={{ 
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
+                  />
                   <Line 
                     type="monotone" 
                     dataKey="highRisk" 
