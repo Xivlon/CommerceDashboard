@@ -224,7 +224,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <ResponsiveContainer width="100%" height={320}>
-                <PieChart margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+                <PieChart margin={{ top: 10, right: 20, bottom: 30, left: 20 }}>
                   <Pie
                     data={pieData}
                     cx="50%"
