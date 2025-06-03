@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Package, ArrowUpRight, Target, ShoppingCart, DollarSign } from "lucide-react";
-import { getProductRecommendations, generateProductRecommendations, formatCurrency, formatPercentage } from "@/lib/ml-api";
+import { TrendingUp, Package, ArrowUpRight, Target, ShoppingCart, DollarSign, RefreshCw, Download, Zap } from "lucide-react";
+import { getProductRecommendations, generateProductRecommendations, formatCurrency, formatPercentage, refreshAllData } from "@/lib/ml-api";
+import { useToast } from "@/hooks/use-toast";
 import type { ProductRecommendation } from "@shared/schema";
 
 interface ProductRecommendationsProps {
@@ -15,10 +16,90 @@ interface ProductRecommendationsProps {
 }
 
 export function ProductRecommendations({ category, detailed = false }: ProductRecommendationsProps) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
   const { data: recommendations = [], isLoading, error } = useQuery({
     queryKey: ['/api/recommendations/products', category],
     queryFn: () => getProductRecommendations(),
   });
+
+  // Mutation for refreshing recommendations
+  const refreshMutation = useMutation({
+    mutationFn: refreshAllData,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/recommendations/products'] });
+      toast({
+        title: "Data Refreshed",
+        description: "Product recommendations have been updated with latest data.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Refresh Failed",
+        description: "Unable to refresh recommendations. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation for generating new recommendations
+  const generateMutation = useMutation({
+    mutationFn: generateProductRecommendations,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/recommendations/products'] });
+      toast({
+        title: "Recommendations Generated",
+        description: "New product recommendations have been generated successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Generation Failed",
+        description: "Unable to generate recommendations. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Export recommendations
+  const handleExport = () => {
+    if (!recommendations || recommendations.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No recommendation data available to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const csvData = recommendations.map(rec => ({
+      productId: rec.productId,
+      recommendedProductId: rec.recommendedProductId,
+      type: rec.recommendationType,
+      confidence: rec.confidence,
+      support: rec.support || 'N/A',
+      lift: rec.lift || 'N/A',
+      coOccurrence: rec.coOccurrenceCount
+    }));
+
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      "Product ID,Recommended Product ID,Type,Confidence,Support,Lift,Co-occurrence\n" +
+      csvData.map(row => Object.values(row).join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "product_recommendations.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export Complete",
+      description: "Product recommendations exported successfully.",
+    });
+  };
 
   if (isLoading) {
     return (
@@ -63,11 +144,51 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" />
-            Product Recommendations
-          </CardTitle>
-          <CardDescription>AI-powered cross-sell and up-sell opportunities</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Product Recommendations
+              </CardTitle>
+              <CardDescription>AI-powered cross-sell and up-sell opportunities</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refreshMutation.mutate()}
+                disabled={refreshMutation.isPending}
+              >
+                {refreshMutation.isPending ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+                Refresh
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => generateMutation.mutate()}
+                disabled={generateMutation.isPending}
+              >
+                {generateMutation.isPending ? (
+                  <Zap className="h-4 w-4 animate-pulse" />
+                ) : (
+                  <Zap className="h-4 w-4" />
+                )}
+                Generate
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExport}
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

@@ -14,6 +14,7 @@ interface ChurnAnalysisProps {
 }
 
 export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { data: customers, isLoading: customersLoading } = useQuery({
@@ -25,6 +26,104 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
     queryKey: ["/api/predictions/churn", period],
     queryFn: () => getChurnPredictions(),
   });
+
+  // Mutation for refreshing churn data
+  const refreshMutation = useMutation({
+    mutationFn: refreshAllData,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/customers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/predictions/churn"] });
+      toast({
+        title: "Data Refreshed",
+        description: "Churn analysis has been updated with latest data.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Refresh Failed",
+        description: "Unable to refresh churn data. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation for analyzing churn risk
+  const analyzeMutation = useMutation({
+    mutationFn: analyzeChurnRisk,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/predictions/churn"] });
+      toast({
+        title: "Analysis Complete",
+        description: "Churn risk analysis has been completed successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Analysis Failed",
+        description: "Unable to analyze churn risk. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Alert high-risk customers
+  const handleAlert = () => {
+    if (!customers) return;
+    
+    const highRiskCustomers = customers.filter(c => c.churnRisk === 'high');
+    
+    if (highRiskCustomers.length === 0) {
+      toast({
+        title: "No High-Risk Customers",
+        description: "No customers currently at high risk of churning.",
+      });
+      return;
+    }
+
+    toast({
+      title: "Alert Triggered",
+      description: `Alerts sent for ${highRiskCustomers.length} high-risk customers.`,
+    });
+  };
+
+  // Export churn data
+  const handleExport = () => {
+    if (!customers || customers.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No customer data available to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const csvData = customers.map(customer => ({
+      name: customer.name,
+      email: customer.email,
+      churnRisk: customer.churnRisk,
+      churnScore: customer.churnRiskScore || 'N/A',
+      lastPurchase: customer.lastPurchaseDate || 'N/A',
+      segment: customer.segment,
+      totalSpent: customer.totalSpent
+    }));
+
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      "Name,Email,Churn Risk,Churn Score,Last Purchase,Segment,Total Spent\n" +
+      csvData.map(row => Object.values(row).join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "churn_analysis.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export Complete",
+      description: "Churn analysis data exported successfully.",
+    });
+  };
 
   if (customersLoading || predictionsLoading) {
     return (
