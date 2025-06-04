@@ -75,7 +75,7 @@ export function ColorPaletteSelector() {
                   </div>
                   
                   {palette === currentPalette && (
-                    <Check className="h-4 w-4 text-blue-600" />
+                    <Check className="h-4 w-4 text-theme-primary" />
                   )}
                 </button>
               );

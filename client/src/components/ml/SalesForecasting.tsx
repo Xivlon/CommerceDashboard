@@ -278,7 +278,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                   <p className="text-xs text-gray-500 mb-2">Model Features:</p>
                   <div className="flex flex-wrap gap-1">
                     {['Seasonality', 'Trends', 'Holidays', 'Marketing', 'Competition'].map((feature) => (
-                      <Badge key={feature} variant="outline" className="text-xs">
+                      <Badge key={feature} variant="outline" className="text-xs border-theme-secondary text-theme-secondary">
                         {feature}
                       </Badge>
                     ))}

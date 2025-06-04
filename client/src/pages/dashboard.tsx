@@ -113,7 +113,7 @@ export default function Dashboard() {
             <Button 
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-theme-primary hover:bg-theme-primary/80"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
               Refresh ML Models
@@ -121,7 +121,7 @@ export default function Dashboard() {
             
             <Button 
               onClick={handleExport}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-theme-success hover:bg-theme-success/80"
             >
               <Download className="w-4 h-4 mr-2" />
               Export Report
@@ -141,27 +141,27 @@ export default function Dashboard() {
                 <div 
                   key={index}
                   className={`p-4 rounded-r-lg border-l-4 ${
-                    insight.type === 'revenue' ? 'border-blue-500 bg-blue-50' :
-                    insight.type === 'churn' ? 'border-red-500 bg-red-50' :
-                    insight.type === 'cross_sell' ? 'border-green-500 bg-green-50' :
-                    'border-purple-500 bg-purple-50'
+                    insight.type === 'revenue' ? 'border-theme-primary bg-theme-primary/10' :
+                    insight.type === 'churn' ? 'border-theme-danger bg-theme-danger/10' :
+                    insight.type === 'cross_sell' ? 'border-theme-success bg-theme-success/10' :
+                    'border-theme-secondary bg-theme-secondary/10'
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <h4 className={`font-medium ${
-                      insight.type === 'revenue' ? 'text-blue-900' :
-                      insight.type === 'churn' ? 'text-red-900' :
-                      insight.type === 'cross_sell' ? 'text-green-900' :
-                      'text-purple-900'
+                      insight.type === 'revenue' ? 'text-theme-primary' :
+                      insight.type === 'churn' ? 'text-theme-danger' :
+                      insight.type === 'cross_sell' ? 'text-theme-success' :
+                      'text-theme-secondary'
                     }`}>
                       {insight.title}
                     </h4>
                   </div>
                   <p className={`text-sm mb-3 ${
-                    insight.type === 'revenue' ? 'text-blue-800' :
-                    insight.type === 'churn' ? 'text-red-800' :
-                    insight.type === 'cross_sell' ? 'text-green-800' :
-                    'text-purple-800'
+                    insight.type === 'revenue' ? 'text-theme-primary/80' :
+                    insight.type === 'churn' ? 'text-theme-danger/80' :
+                    insight.type === 'cross_sell' ? 'text-theme-success/80' :
+                    'text-theme-secondary/80'
                   }`}>
                     {insight.description}
                   </p>
