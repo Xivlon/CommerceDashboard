@@ -199,11 +199,11 @@ export default function Dashboard() {
             {/* Compact Grid Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[5px]">
               <ChurnAnalysis period={selectedPeriod} />
-              <SalesForecasting period={selectedPeriod} />
+              <CLVPrediction period={selectedPeriod} />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[5px]">
               <ProductRecommendations category={selectedCategory} />
-              <CLVPrediction period={selectedPeriod} />
+              <SalesForecasting period={selectedPeriod} />
             </div>
           </TabsContent>
 
