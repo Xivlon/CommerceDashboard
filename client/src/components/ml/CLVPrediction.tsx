@@ -183,7 +183,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
           <div className="flex items-center justify-between">
             <CardTitle>Customer Lifetime Value Distribution</CardTitle>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
+              <Badge variant="secondary" className="bg-green-100 text-green-800 px-3 py-1 text-sm">
                 ML Confidence: {(modelAccuracy * 100).toFixed(1)}%
               </Badge>
               <Button
