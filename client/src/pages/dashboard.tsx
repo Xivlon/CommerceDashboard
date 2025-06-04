@@ -10,6 +10,7 @@ import { ChurnAnalysis } from "@/components/ml/ChurnAnalysis";
 import { SalesForecasting } from "@/components/ml/SalesForecasting";
 import { ProductRecommendations } from "@/components/ml/ProductRecommendations";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -194,16 +195,41 @@ export default function Dashboard() {
             <TabsTrigger value="recommendations">Product Insights</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-8">
-            {/* Overview combines all ML features */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <ChurnAnalysis period={selectedPeriod} />
-              <SalesForecasting period={selectedPeriod} />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <ProductRecommendations category={selectedCategory} />
-              <CLVPrediction period={selectedPeriod} />
-            </div>
+          <TabsContent value="overview" className="h-[800px]">
+            {/* Resizable Overview Layout */}
+            <ResizablePanelGroup direction="vertical" className="h-full">
+              <ResizablePanel defaultSize={50} minSize={30}>
+                <ResizablePanelGroup direction="horizontal" className="h-full">
+                  <ResizablePanel defaultSize={50} minSize={30}>
+                    <div className="h-full p-2">
+                      <ChurnAnalysis period={selectedPeriod} />
+                    </div>
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize={50} minSize={30}>
+                    <div className="h-full p-2">
+                      <SalesForecasting period={selectedPeriod} />
+                    </div>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={50} minSize={30}>
+                <ResizablePanelGroup direction="horizontal" className="h-full">
+                  <ResizablePanel defaultSize={50} minSize={30}>
+                    <div className="h-full p-2">
+                      <ProductRecommendations category={selectedCategory} />
+                    </div>
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize={50} minSize={30}>
+                    <div className="h-full p-2">
+                      <CLVPrediction period={selectedPeriod} />
+                    </div>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </TabsContent>
 
           <TabsContent value="clv">
