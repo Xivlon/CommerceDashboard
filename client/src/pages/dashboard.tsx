@@ -194,7 +194,7 @@ export default function Dashboard() {
             <TabsTrigger value="recommendations">Product Insights</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-8">
+          <TabsContent value="overview" className="space-y-0">
             {/* Overview combines all ML features */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <ChurnAnalysis period={selectedPeriod} />
