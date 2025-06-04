@@ -182,44 +182,46 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Customer Lifetime Value Distribution</CardTitle>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-end gap-2">
               <Badge variant="secondary" className="bg-green-100 text-green-800 px-6 py-2 whitespace-nowrap">
                 ML Confidence: {(modelAccuracy * 100).toFixed(1)}%
               </Badge>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => refreshMutation.mutate()}
-                disabled={refreshMutation.isPending}
-              >
-                {refreshMutation.isPending ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                ) : (
-                  <RefreshCw className="h-4 w-4" />
-                )}
-                Refresh
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => generateMutation.mutate()}
-                disabled={generateMutation.isPending}
-              >
-                {generateMutation.isPending ? (
-                  <Zap className="h-4 w-4 animate-pulse" />
-                ) : (
-                  <Zap className="h-4 w-4" />
-                )}
-                Generate
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-              >
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => refreshMutation.mutate()}
+                  disabled={refreshMutation.isPending}
+                >
+                  {refreshMutation.isPending ? (
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-4 w-4" />
+                  )}
+                  Refresh
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateMutation.mutate()}
+                  disabled={generateMutation.isPending}
+                >
+                  {generateMutation.isPending ? (
+                    <Zap className="h-4 w-4 animate-pulse" />
+                  ) : (
+                    <Zap className="h-4 w-4" />
+                  )}
+                  Generate
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExport}
+                >
+                  <Download className="h-4 w-4" />
+                  Export
+                </Button>
+              </div>
             </div>
           </div>
         </CardHeader>
