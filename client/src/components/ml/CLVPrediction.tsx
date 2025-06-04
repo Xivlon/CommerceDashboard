@@ -262,7 +262,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
             </div>
             
             <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 gap-4 text-center">
                 <div className="p-3 bg-theme-success/10 rounded-lg border border-theme-success/20">
                   <p className="text-sm text-gray-600">High Value</p>
                   <p className="text-lg font-bold text-theme-success">{clvSegments.high}</p>
