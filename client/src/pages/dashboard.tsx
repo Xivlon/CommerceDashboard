@@ -195,41 +195,34 @@ export default function Dashboard() {
             <TabsTrigger value="recommendations">Product Insights</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="h-[800px]">
+          <TabsContent value="overview" className="space-y-4">
             {/* Resizable Overview Layout */}
-            <ResizablePanelGroup direction="vertical" className="h-full">
-              <ResizablePanel defaultSize={50} minSize={30}>
-                <ResizablePanelGroup direction="horizontal" className="h-full">
-                  <ResizablePanel defaultSize={50} minSize={30}>
-                    <div className="h-full p-2">
-                      <ChurnAnalysis period={selectedPeriod} />
-                    </div>
-                  </ResizablePanel>
-                  <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize={50} minSize={30}>
-                    <div className="h-full p-2">
-                      <SalesForecasting period={selectedPeriod} />
-                    </div>
-                  </ResizablePanel>
-                </ResizablePanelGroup>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={50} minSize={30}>
-                <ResizablePanelGroup direction="horizontal" className="h-full">
-                  <ResizablePanel defaultSize={50} minSize={30}>
-                    <div className="h-full p-2">
-                      <ProductRecommendations category={selectedCategory} />
-                    </div>
-                  </ResizablePanel>
-                  <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize={50} minSize={30}>
-                    <div className="h-full p-2">
-                      <CLVPrediction period={selectedPeriod} />
-                    </div>
-                  </ResizablePanel>
-                </ResizablePanelGroup>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+            <div className="flex flex-col gap-4 h-[800px]">
+              <div className="flex gap-4 flex-1">
+                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                  <div className="h-full p-2">
+                    <ChurnAnalysis period={selectedPeriod} />
+                  </div>
+                </div>
+                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                  <div className="h-full p-2">
+                    <SalesForecasting period={selectedPeriod} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-4 flex-1">
+                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                  <div className="h-full p-2">
+                    <ProductRecommendations category={selectedCategory} />
+                  </div>
+                </div>
+                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                  <div className="h-full p-2">
+                    <CLVPrediction period={selectedPeriod} />
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="clv">
