@@ -215,14 +215,6 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                 Last Updated: 2 hours ago
               </Badge>
-              <Button 
-                size="sm" 
-                className="bg-red-600 hover:bg-red-700"
-                onClick={handleSendRetentionCampaign}
-                disabled={highRiskCustomers.length === 0}
-              >
-                Send Alerts
-              </Button>
             </div>
           </div>
         </CardHeader>
@@ -232,12 +224,23 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Risk Summary</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">High Risk</span>
+                <div className="p-3 bg-red-50 rounded-lg border border-red-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <span className="text-sm text-gray-600">High Risk</span>
+                    </div>
+                    <span className="font-bold text-red-600">{churnSegments.high}</span>
                   </div>
-                  <span className="font-bold text-red-600">{churnSegments.high}</span>
+                  <Button 
+                    size="sm" 
+                    className="bg-red-600 hover:bg-red-700 w-full"
+                    onClick={handleSendRetentionCampaign}
+                    disabled={highRiskCustomers.length === 0}
+                  >
+                    <Bell className="h-4 w-4 mr-2" />
+                    Send Alerts
+                  </Button>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                   <div className="flex items-center gap-2">
