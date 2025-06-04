@@ -99,7 +99,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
   ];
 
   return (
-    <div className="space-y-1 pb-[5px]">
+    <div className="space-y-6 pb-[5px]">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -122,8 +122,8 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-1">
-            <ResponsiveContainer width="100%" height={300}>
+          <div className="mb-6">
+            <ResponsiveContainer width="100%" height={400}>
               <LineChart data={combinedData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
