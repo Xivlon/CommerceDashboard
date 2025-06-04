@@ -401,15 +401,51 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
           )}
 
           {highRiskCustomers.length > 0 && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-4 h-4 text-blue-600" />
-                <p className="font-medium text-blue-900">AI Recommendation</p>
+            <div className="mt-4 space-y-4">
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="w-4 h-4 text-blue-600" />
+                  <p className="font-medium text-blue-900">AI Recommendation</p>
+                </div>
+                <p className="text-sm text-blue-800">
+                  Focus retention campaigns on high-risk segment. Predicted ROI: 340%. 
+                  Consider offering personalized discounts or loyalty program enrollment.
+                </p>
               </div>
-              <p className="text-sm text-blue-800">
-                Focus retention campaigns on high-risk segment. Predicted ROI: 340%. 
-                Consider offering personalized discounts or loyalty program enrollment.
-              </p>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+                  <p className="text-sm text-gray-600">Revenue at Risk</p>
+                  <p className="text-lg font-bold text-red-600">
+                    ${Math.round(highRiskCustomers.reduce((sum, c) => sum + parseFloat(c.totalSpent), 0)).toLocaleString()}
+                  </p>
+                  <p className="text-xs text-gray-500">High-risk customers</p>
+                </div>
+                <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                  <p className="text-sm text-gray-600">Avg. Risk Score</p>
+                  <p className="text-lg font-bold text-orange-600">
+                    {Math.round(highRiskCustomers.reduce((sum, c) => sum + (c.churnRiskScore || 0.8), 0) / highRiskCustomers.length * 100)}%
+                  </p>
+                  <p className="text-xs text-gray-500">Needs attention</p>
+                </div>
+                <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-sm text-gray-600">Time to Act</p>
+                  <p className="text-lg font-bold text-yellow-600">7-14 days</p>
+                  <p className="text-xs text-gray-500">Optimal window</p>
+                </div>
+              </div>
+              
+              <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingDown className="w-4 h-4 text-purple-600" />
+                  <p className="font-medium text-purple-900">Retention Strategy</p>
+                </div>
+                <div className="space-y-1 text-sm text-purple-800">
+                  <p>• Send personalized win-back emails within 48 hours</p>
+                  <p>• Offer 15-20% discount on next purchase</p>
+                  <p>• Schedule follow-up call for high-value customers</p>
+                </div>
+              </div>
             </div>
           )}
         </CardContent>
