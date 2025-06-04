@@ -195,36 +195,15 @@ export default function Dashboard() {
             <TabsTrigger value="recommendations">Product Insights</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-4">
-            {/* Reorganized Resizable Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[800px]">
-              {/* Left Column - Full Height */}
-              <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-                <div className="h-full p-2">
-                  <ChurnAnalysis period={selectedPeriod} />
-                </div>
-              </div>
-              
-              {/* Middle Column - Stacked */}
-              <div className="flex flex-col gap-4">
-                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full flex-1 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-                  <div className="h-full p-2">
-                    <SalesForecasting period={selectedPeriod} />
-                  </div>
-                </div>
-                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full flex-1 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-                  <div className="h-full p-2">
-                    <ProductRecommendations category={selectedCategory} />
-                  </div>
-                </div>
-              </div>
-              
-              {/* Right Column - Full Height */}
-              <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-                <div className="h-full p-2">
-                  <CLVPrediction period={selectedPeriod} />
-                </div>
-              </div>
+          <TabsContent value="overview" className="space-y-8">
+            {/* Clean Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <ChurnAnalysis period={selectedPeriod} />
+              <SalesForecasting period={selectedPeriod} />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <ProductRecommendations category={selectedCategory} />
+              <CLVPrediction period={selectedPeriod} />
             </div>
           </TabsContent>
 
