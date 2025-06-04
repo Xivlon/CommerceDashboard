@@ -196,30 +196,33 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            {/* Resizable Overview Layout */}
-            <div className="flex flex-col gap-4 h-[800px]">
-              <div className="flex gap-4 flex-1">
-                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-                  <div className="h-full p-2">
-                    <ChurnAnalysis period={selectedPeriod} />
-                  </div>
+            {/* Reorganized Resizable Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[800px]">
+              {/* Left Column - Full Height */}
+              <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                <div className="h-full p-2">
+                  <ChurnAnalysis period={selectedPeriod} />
                 </div>
-                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+              </div>
+              
+              {/* Middle Column - Stacked */}
+              <div className="flex flex-col gap-4">
+                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full flex-1 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
                   <div className="h-full p-2">
                     <SalesForecasting period={selectedPeriod} />
                   </div>
                 </div>
-              </div>
-              <div className="flex gap-4 flex-1">
-                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full flex-1 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
                   <div className="h-full p-2">
                     <ProductRecommendations category={selectedCategory} />
                   </div>
                 </div>
-                <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-1/2 h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-                  <div className="h-full p-2">
-                    <CLVPrediction period={selectedPeriod} />
-                  </div>
+              </div>
+              
+              {/* Right Column - Full Height */}
+              <div className="resize-both overflow-auto min-w-[300px] min-h-[200px] w-full h-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                <div className="h-full p-2">
+                  <CLVPrediction period={selectedPeriod} />
                 </div>
               </div>
             </div>
