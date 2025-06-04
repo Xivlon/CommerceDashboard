@@ -261,19 +261,19 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
             
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="p-3 bg-green-50 rounded-lg">
+                <div className="p-3 bg-theme-success/10 rounded-lg border border-theme-success/20">
                   <p className="text-sm text-gray-600">High Value</p>
-                  <p className="text-lg font-bold text-green-600">{clvSegments.high}</p>
+                  <p className="text-lg font-bold text-theme-success">{clvSegments.high}</p>
                   <p className="text-xs text-gray-500">CLV &gt; $2K</p>
                 </div>
-                <div className="p-3 bg-blue-50 rounded-lg">
+                <div className="p-3 bg-theme-primary/10 rounded-lg border border-theme-primary/20">
                   <p className="text-sm text-gray-600">Medium Value</p>
-                  <p className="text-lg font-bold text-blue-600">{clvSegments.medium}</p>
+                  <p className="text-lg font-bold text-theme-primary">{clvSegments.medium}</p>
                   <p className="text-xs text-gray-500">CLV $500-$2K</p>
                 </div>
-                <div className="p-3 bg-amber-50 rounded-lg">
+                <div className="p-3 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
                   <p className="text-sm text-gray-600">Low Value</p>
-                  <p className="text-lg font-bold text-amber-600">{clvSegments.low}</p>
+                  <p className="text-lg font-bold text-theme-accent">{clvSegments.low}</p>
                   <p className="text-xs text-gray-500">CLV &lt; $500</p>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                       <XAxis dataKey="segment" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="avgCLV" fill="#8b5cf6" />
+                      <Bar dataKey="avgCLV" fill={getChartColors()[1]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

@@ -196,18 +196,18 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{crossSellRecommendations.length}</div>
+                <div className="text-2xl font-bold text-theme-primary">{crossSellRecommendations.length}</div>
                 <div className="text-sm text-gray-600">Cross-sell Opportunities</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{upSellRecommendations.length}</div>
+                <div className="text-2xl font-bold text-theme-success">{upSellRecommendations.length}</div>
                 <div className="text-sm text-gray-600">Up-sell Opportunities</div>
               </div>
             </div>
 
             <div className="space-y-2">
               {recommendations.slice(0, 3).map((rec, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-3 bg-theme-neutral/5 rounded-lg border border-theme-neutral/10">
                   <div>
                     <p className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</p>
                     <p className="text-sm text-gray-600">{rec.recommendationType.replace('_', '-')} opportunity</p>

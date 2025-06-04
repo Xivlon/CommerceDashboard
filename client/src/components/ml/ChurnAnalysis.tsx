@@ -298,12 +298,12 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
           </div>
           
           {/* Action Required Section - Moved below the chart */}
-          <div className="mt-6 p-4 bg-red-50 rounded-lg">
-            <h4 className="font-semibold text-red-800 mb-2">Action Required</h4>
-            <p className="text-sm text-red-700">
+          <div className="mt-6 p-4 bg-theme-danger/10 rounded-lg border border-theme-danger/20">
+            <h4 className="font-semibold text-theme-danger mb-2">Action Required</h4>
+            <p className="text-sm text-theme-danger/80">
               {churnSegments.high} customers need immediate retention campaigns
             </p>
-            <p className="text-xs text-red-600 mt-1">
+            <p className="text-xs text-theme-danger/70 mt-1">
               ${totalAtRiskRevenue.toLocaleString()} revenue at risk
             </p>
           </div>
@@ -315,7 +315,7 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
           <div className="flex items-center justify-between">
             <CardTitle>High-Risk Customers</CardTitle>
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertTriangle className="h-4 w-4 text-theme-danger" />
               <span className="text-sm text-gray-500">Requires immediate attention</span>
             </div>
           </div>
@@ -348,10 +348,10 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                     const riskScore = customer.churnRiskScore || 0.8;
                     
                     return (
-                      <TableRow key={customer.id} className="bg-red-50 border-red-100">
+                      <TableRow key={customer.id} className="bg-theme-danger/5 border-theme-danger/20">
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                            <div className="w-8 h-8 bg-theme-danger rounded-full flex items-center justify-center text-white text-sm font-medium">
                               {customer.name.split(' ').map(n => n[0]).join('')}
                             </div>
                             <div>
@@ -363,7 +363,7 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                         <TableCell className="text-center">
                           <Badge 
                             variant="destructive"
-                            className="bg-red-600"
+                            className="bg-theme-danger"
                           >
                             {(riskScore * 100).toFixed(0)}%
                           </Badge>
