@@ -99,7 +99,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-[5px]">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
