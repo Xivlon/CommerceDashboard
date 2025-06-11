@@ -282,47 +282,83 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
 
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3">CLV Insights & Trends</h4>
-                  <div className="grid grid-cols-1 gap-4">
-                    {/* Key Insights */}
+                  <h4 className="font-medium text-gray-900 mb-4">CLV Insights & Trends</h4>
+                  <div className="space-y-3">
+                    {/* Growth Opportunities */}
                     <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h5 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4" />
-                        Growth Opportunities
-                      </h5>
-                      <div className="space-y-1 text-sm text-blue-800">
-                        <p>• 23% increase in high-value customers this quarter</p>
-                        <p>• Cross-sell potential: $127K additional revenue</p>
-                        <p>• Premium tier upgrade candidates: 45 customers</p>
-                        <p>• Loyalty program enrollment impact: +32% CLV</p>
+                      <div className="flex items-center gap-2 mb-3">
+                        <TrendingUp className="h-4 w-4 text-blue-600" />
+                        <h5 className="font-semibold text-blue-900">Growth Opportunities</h5>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2 text-sm text-blue-800">
+                        <div className="flex justify-between items-center">
+                          <span>High-value customer growth</span>
+                          <span className="font-medium">+23%</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Cross-sell revenue potential</span>
+                          <span className="font-medium">$127K</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Premium upgrade candidates</span>
+                          <span className="font-medium">45 customers</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Loyalty program CLV impact</span>
+                          <span className="font-medium">+32%</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Risk Indicators */}
+                    {/* Value at Risk */}
                     <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                      <h5 className="font-semibold text-orange-900 mb-2 flex items-center gap-2">
-                        <AlertTriangle className="h-4 w-4" />
-                        Value at Risk
-                      </h5>
-                      <div className="space-y-1 text-sm text-orange-800">
-                        <p>• 12 high-value customers showing decline signals</p>
-                        <p>• Potential revenue loss: $89K if churned</p>
-                        <p>• Seasonal impact on CLV predictions: -15%</p>
-                        <p>• Price sensitivity in medium-value segment</p>
+                      <div className="flex items-center gap-2 mb-3">
+                        <AlertTriangle className="h-4 w-4 text-orange-600" />
+                        <h5 className="font-semibold text-orange-900">Value at Risk</h5>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2 text-sm text-orange-800">
+                        <div className="flex justify-between items-center">
+                          <span>High-value customers at risk</span>
+                          <span className="font-medium">12 customers</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Potential revenue loss</span>
+                          <span className="font-medium">$89K</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Seasonal CLV impact</span>
+                          <span className="font-medium">-15%</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Price sensitive segment</span>
+                          <span className="font-medium">Medium tier</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Actionable Recommendations */}
+                    {/* Recommended Actions */}
                     <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                      <h5 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
-                        <Target className="h-4 w-4" />
-                        Recommended Actions
-                      </h5>
-                      <div className="space-y-1 text-sm text-green-800">
-                        <p>• Launch VIP program for top 10% CLV customers</p>
-                        <p>• Implement personalized retention campaigns</p>
-                        <p>• Focus on product bundling for medium-value tier</p>
-                        <p>• Optimize onboarding for new customer CLV growth</p>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Target className="h-4 w-4 text-green-600" />
+                        <h5 className="font-semibold text-green-900">Recommended Actions</h5>
+                      </div>
+                      <div className="space-y-2 text-sm text-green-800">
+                        <div className="p-2 bg-white rounded border border-green-100">
+                          <div className="font-medium">VIP Program Launch</div>
+                          <div className="text-xs text-green-600">Target: Top 10% CLV customers</div>
+                        </div>
+                        <div className="p-2 bg-white rounded border border-green-100">
+                          <div className="font-medium">Retention Campaigns</div>
+                          <div className="text-xs text-green-600">Focus: Personalized engagement</div>
+                        </div>
+                        <div className="p-2 bg-white rounded border border-green-100">
+                          <div className="font-medium">Product Bundling</div>
+                          <div className="text-xs text-green-600">Strategy: Medium-value tier upsell</div>
+                        </div>
+                        <div className="p-2 bg-white rounded border border-green-100">
+                          <div className="font-medium">Onboarding Optimization</div>
+                          <div className="text-xs text-green-600">Goal: New customer CLV growth</div>
+                        </div>
                       </div>
                     </div>
                   </div>

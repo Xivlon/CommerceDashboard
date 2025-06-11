@@ -1,4 +1,4 @@
-import pickle
+#(import pickle
 import numpy as np
 
 # Load the trained model
@@ -13,7 +13,6 @@ def predict_churn(customer_data):
         customer_data['days_since_last_purchase'],
         customer_data['total_spent']
     ]])
-
     prediction = model.predict(features)
     probability = model.predict_proba(features)
 
@@ -22,6 +21,7 @@ def predict_churn(customer_data):
         'confidence': round(float(max(probability[0])), 2)
     }
 
+# Test block — only runs when this file is executed directly
 if __name__ == "__main__":
     sample = {
         'avg_order_value': 30,
