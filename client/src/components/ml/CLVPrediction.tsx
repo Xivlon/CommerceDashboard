@@ -29,7 +29,6 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
     queryFn: () => getCLVPredictions(),
   });
 
-  // Mutation for refreshing data
   const refreshMutation = useMutation({
     mutationFn: refreshAllData,
     onSuccess: () => {
@@ -49,7 +48,6 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
     },
   });
 
-  // Mutation for generating new predictions
   const generateMutation = useMutation({
     mutationFn: generateAllPredictions,
     onSuccess: () => {
@@ -69,30 +67,14 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
     },
   });
 
-  // Export functionality
   const handleExport = () => {
-    if (!customers || customers.length === 0) {
-      toast({
-        title: "No Data",
-        description: "No customer data available to export.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const csvData = customers.map(customer => ({
-      name: customer.name,
-      email: customer.email,
-      totalSpent: customer.totalSpent,
-      predictedCLV: customer.predictedCLV || 'N/A',
-      segment: customer.segment,
-      churnRisk: customer.churnRisk,
-      confidence: customer.clvPrediction?.confidence || 'N/A'
-    }));
-
+    if (!customers) return;
+    
     const csvContent = "data:text/csv;charset=utf-8," + 
-      "Name,Email,Total Spent,Predicted CLV,Segment,Churn Risk,Confidence\n" +
-      csvData.map(row => Object.values(row).join(",")).join("\n");
+      "Customer,Email,Current CLV,Predicted CLV,Confidence\n" +
+      customers.map(c => 
+        `${c.name},${c.email},${c.totalSpent},${c.predictedCLV || 'N/A'},${c.clvPrediction?.confidence || 'N/A'}`
+      ).join("\n");
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -145,7 +127,6 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
     );
   }
 
-  // Process CLV data for visualization
   const clvSegments = customers.reduce((acc, customer) => {
     const clv = customer.predictedCLV || parseFloat(customer.totalSpent);
     if (clv >= 2000) acc.high++;
@@ -248,13 +229,12 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                     labelStyle={{ color: '#374151' }}
                   />
                   <Legend 
-                    verticalAlign="bottom" 
+                    verticalAlign="bottom"
                     height={36}
                     wrapperStyle={{ 
-                      paddingTop: '8px',
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      fontWeight: '500'
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      paddingTop: '15px'
                     }}
                   />
                 </PieChart>
@@ -266,7 +246,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                 <div className="p-3 bg-theme-success/10 rounded-lg border border-theme-success/20">
                   <p className="text-sm text-gray-600">High Value</p>
                   <p className="text-lg font-bold text-theme-success">{clvSegments.high}</p>
-                  <p className="text-xs text-gray-500">CLV &gt; $2K</p>
+                  <p className="text-xs text-gray-500">CLV {'>'} $2K</p>
                 </div>
                 <div className="p-3 bg-theme-primary/10 rounded-lg border border-theme-primary/20">
                   <p className="text-sm text-gray-600">Medium Value</p>
@@ -276,96 +256,91 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                 <div className="p-3 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
                   <p className="text-sm text-gray-600">Low Value</p>
                   <p className="text-lg font-bold text-theme-accent">{clvSegments.low}</p>
-                  <p className="text-xs text-gray-500">CLV &lt; $500</p>
+                  <p className="text-xs text-gray-500">CLV under $500</p>
                 </div>
               </div>
-
             </div>
           </div>
 
-          {/* CLV Insights & Trends - moved outside grid for full width */}
           <div className="mt-8">
             <h4 className="font-medium text-gray-900 mb-4">CLV Insights & Trends</h4>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    {/* Growth Opportunities */}
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <div className="flex items-center gap-2 mb-3">
-                        <TrendingUp className="h-4 w-4 text-blue-600" />
-                        <h5 className="font-semibold text-blue-900">Growth Opportunities</h5>
-                      </div>
-                      <div className="space-y-2 text-sm text-blue-800">
-                        <div className="flex justify-between items-center">
-                          <span>High-value customer growth</span>
-                          <span className="font-medium">+23%</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Cross-sell revenue potential</span>
-                          <span className="font-medium">$127K</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Premium upgrade candidates</span>
-                          <span className="font-medium">45 customers</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Loyalty program CLV impact</span>
-                          <span className="font-medium">+32%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Value at Risk */}
-                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                      <div className="flex items-center gap-2 mb-3">
-                        <AlertTriangle className="h-4 w-4 text-orange-600" />
-                        <h5 className="font-semibold text-orange-900">Value at Risk</h5>
-                      </div>
-                      <div className="space-y-2 text-sm text-orange-800">
-                        <div className="flex justify-between items-center">
-                          <span>High-value customers at risk</span>
-                          <span className="font-medium">12 customers</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Potential revenue loss</span>
-                          <span className="font-medium">$89K</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Seasonal CLV impact</span>
-                          <span className="font-medium">-15%</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Price sensitive segment</span>
-                          <span className="font-medium">Medium tier</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Recommended Actions */}
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Target className="h-4 w-4 text-green-600" />
-                        <h5 className="font-semibold text-green-900">Recommended Actions</h5>
-                      </div>
-                      <div className="space-y-2 text-sm text-green-800">
-                        <div className="flex justify-between items-center">
-                          <span>VIP Program Launch</span>
-                          <span className="font-medium text-xs">Top 10%</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Retention Campaigns</span>
-                          <span className="font-medium text-xs">Personalized</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Product Bundling</span>
-                          <span className="font-medium text-xs">Medium tier</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Onboarding Optimization</span>
-                          <span className="font-medium text-xs">New growth</span>
-                        </div>
-                      </div>
-                    </div>
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <TrendingUp className="h-4 w-4 text-blue-600" />
+                  <h5 className="font-semibold text-blue-900">Growth Opportunities</h5>
+                </div>
+                <div className="space-y-2 text-sm text-blue-800">
+                  <div className="flex justify-between items-center">
+                    <span>High-value customer growth</span>
+                    <span className="font-medium">+23%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Cross-sell revenue potential</span>
+                    <span className="font-medium">$127K</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Premium upgrade candidates</span>
+                    <span className="font-medium">45 customers</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Loyalty program CLV impact</span>
+                    <span className="font-medium">+32%</span>
                   </div>
                 </div>
+              </div>
+
+              <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle className="h-4 w-4 text-orange-600" />
+                  <h5 className="font-semibold text-orange-900">Value at Risk</h5>
+                </div>
+                <div className="space-y-2 text-sm text-orange-800">
+                  <div className="flex justify-between items-center">
+                    <span>High-value customers at risk</span>
+                    <span className="font-medium">12 customers</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Potential revenue loss</span>
+                    <span className="font-medium">$89K</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Seasonal CLV impact</span>
+                    <span className="font-medium">-15%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Price sensitive segment</span>
+                    <span className="font-medium">Medium tier</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="h-4 w-4 text-green-600" />
+                  <h5 className="font-semibold text-green-900">Recommended Actions</h5>
+                </div>
+                <div className="space-y-2 text-sm text-green-800">
+                  <div className="flex justify-between items-center">
+                    <span>VIP Program Launch</span>
+                    <span className="font-medium text-xs">Top 10%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Retention Campaigns</span>
+                    <span className="font-medium text-xs">Personalized</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Product Bundling</span>
+                    <span className="font-medium text-xs">Medium tier</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Onboarding Optimization</span>
+                    <span className="font-medium text-xs">New growth</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {detailed && (
             <div className="mt-6">
@@ -433,48 +408,50 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                       <TableCell className="text-right">
                         <div>
                           <span className="font-medium text-green-600">
-                            ${(customer.predictedCLV || parseFloat(customer.totalSpent)).toLocaleString()}
+                            ${customer.predictedCLV ? customer.predictedCLV.toLocaleString() : 'N/A'}
                           </span>
                           {customer.predictedCLV && (
-                            <div className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500">
                               {customer.predictedCLV > parseFloat(customer.totalSpent) ? '+' : ''}
                               {(((customer.predictedCLV - parseFloat(customer.totalSpent)) / parseFloat(customer.totalSpent)) * 100).toFixed(1)}%
-                            </div>
+                            </p>
                           )}
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge 
-                          variant="secondary" 
-                          className={`${
-                            parseFloat(customer.clvPrediction?.confidence || "0.8") > 0.9 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}
-                        >
-                          {(parseFloat(customer.clvPrediction?.confidence || "0.8") * 100).toFixed(0)}%
+                        <Badge variant="outline" className="text-xs">
+                          {customer.clvPrediction?.confidence ? 
+                            `${(parseFloat(customer.clvPrediction.confidence) * 100).toFixed(0)}%` : 
+                            'N/A'
+                          }
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge 
-                          variant="outline"
-                          className={`${
-                            customer.segment === 'vip' ? 'border-purple-500 text-purple-700' :
-                            customer.segment === 'high' ? 'border-green-500 text-green-700' :
-                            customer.segment === 'medium' ? 'border-blue-500 text-blue-700' :
-                            'border-gray-500 text-gray-700'
-                          }`}
+                          variant="outline" 
+                          className={
+                            (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 2000 
+                              ? "bg-green-100 text-green-800" 
+                              : (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 500 
+                              ? "bg-blue-100 text-blue-800" 
+                              : "bg-gray-100 text-gray-800"
+                          }
                         >
-                          {customer.segment.toUpperCase()}
+                          {(customer.predictedCLV || parseFloat(customer.totalSpent)) >= 2000 
+                            ? "High" 
+                            : (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 500 
+                            ? "Medium" 
+                            : "Low"
+                          }
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center gap-2 justify-end">
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                            <Mail className="h-4 w-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                        <div className="flex gap-1 justify-end">
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
                             <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Mail className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -482,59 +459,6 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                   ))}
                 </TableBody>
               </Table>
-            </div>
-          )}
-
-          {topCLVCustomers.length > 0 && (
-            <div className="mt-4 space-y-4">
-              <div className="p-4 bg-green-50 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="w-4 h-4 text-green-600" />
-                  <p className="font-medium text-green-900">Growth Opportunity</p>
-                </div>
-                <p className="text-sm text-green-800">
-                  High-value customers show 25% growth potential. Focus on cross-selling and premium service offerings for maximum CLV expansion.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-gray-600">Total Predicted CLV</p>
-                  <p className="text-lg font-bold text-blue-600">
-                    ${Math.round(topCLVCustomers.reduce((sum, c) => sum + (c.predictedCLV || parseFloat(c.totalSpent)), 0)).toLocaleString()}
-                  </p>
-                  <p className="text-xs text-gray-500">Top {topCLVCustomers.length} customers</p>
-                </div>
-                <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                  <p className="text-sm text-gray-600">Avg. Growth Rate</p>
-                  <p className="text-lg font-bold text-purple-600">
-                    {Math.round(topCLVCustomers.reduce((sum, c) => {
-                      const growth = c.predictedCLV ? ((c.predictedCLV - parseFloat(c.totalSpent)) / parseFloat(c.totalSpent)) * 100 : 0;
-                      return sum + Math.max(0, growth);
-                    }, 0) / topCLVCustomers.length)}%
-                  </p>
-                  <p className="text-xs text-gray-500">Expected increase</p>
-                </div>
-                <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                  <p className="text-sm text-gray-600">High Confidence</p>
-                  <p className="text-lg font-bold text-green-600">
-                    {topCLVCustomers.filter(c => parseFloat(c.clvPrediction?.confidence || "0.8") > 0.85).length}
-                  </p>
-                  <p className="text-xs text-gray-500">Reliable predictions</p>
-                </div>
-              </div>
-              
-              <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="w-4 h-4 text-indigo-600" />
-                  <p className="font-medium text-indigo-900">Engagement Strategy</p>
-                </div>
-                <div className="space-y-1 text-sm text-indigo-800">
-                  <p>• Offer VIP loyalty program to top 10% customers</p>
-                  <p>• Implement personalized product recommendations</p>
-                  <p>• Schedule quarterly business reviews for enterprise clients</p>
-                </div>
-              </div>
             </div>
           )}
         </CardContent>
