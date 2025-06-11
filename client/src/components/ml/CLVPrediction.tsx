@@ -283,14 +283,14 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
               <div className="space-y-6">
                 <div>
                   <h4 className="font-medium text-gray-900 mb-4">CLV Insights & Trends</h4>
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Growth Opportunities */}
                     <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <div className="flex items-center gap-2 mb-3">
                         <TrendingUp className="h-4 w-4 text-blue-600" />
                         <h5 className="font-semibold text-blue-900">Growth Opportunities</h5>
                       </div>
-                      <div className="grid grid-cols-1 gap-2 text-sm text-blue-800">
+                      <div className="space-y-2 text-sm text-blue-800">
                         <div className="flex justify-between items-center">
                           <span>High-value customer growth</span>
                           <span className="font-medium">+23%</span>
@@ -316,7 +316,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                         <AlertTriangle className="h-4 w-4 text-orange-600" />
                         <h5 className="font-semibold text-orange-900">Value at Risk</h5>
                       </div>
-                      <div className="grid grid-cols-1 gap-2 text-sm text-orange-800">
+                      <div className="space-y-2 text-sm text-orange-800">
                         <div className="flex justify-between items-center">
                           <span>High-value customers at risk</span>
                           <span className="font-medium">12 customers</span>
