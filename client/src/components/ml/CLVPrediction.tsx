@@ -343,21 +343,21 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                         <h5 className="font-semibold text-green-900">Recommended Actions</h5>
                       </div>
                       <div className="space-y-2 text-sm text-green-800">
-                        <div className="p-2 bg-white rounded border border-green-100">
-                          <div className="font-medium">VIP Program Launch</div>
-                          <div className="text-xs text-green-600">Target: Top 10% CLV customers</div>
+                        <div className="flex justify-between items-center">
+                          <span>VIP Program Launch</span>
+                          <span className="font-medium text-xs">Top 10%</span>
                         </div>
-                        <div className="p-2 bg-white rounded border border-green-100">
-                          <div className="font-medium">Retention Campaigns</div>
-                          <div className="text-xs text-green-600">Focus: Personalized engagement</div>
+                        <div className="flex justify-between items-center">
+                          <span>Retention Campaigns</span>
+                          <span className="font-medium text-xs">Personalized</span>
                         </div>
-                        <div className="p-2 bg-white rounded border border-green-100">
-                          <div className="font-medium">Product Bundling</div>
-                          <div className="text-xs text-green-600">Strategy: Medium-value tier upsell</div>
+                        <div className="flex justify-between items-center">
+                          <span>Product Bundling</span>
+                          <span className="font-medium text-xs">Medium tier</span>
                         </div>
-                        <div className="p-2 bg-white rounded border border-green-100">
-                          <div className="font-medium">Onboarding Optimization</div>
-                          <div className="text-xs text-green-600">Goal: New customer CLV growth</div>
+                        <div className="flex justify-between items-center">
+                          <span>Onboarding Optimization</span>
+                          <span className="font-medium text-xs">New growth</span>
                         </div>
                       </div>
                     </div>
