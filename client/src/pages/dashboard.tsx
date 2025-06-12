@@ -10,6 +10,7 @@ import { ChurnAnalysis } from "@/components/ml/ChurnAnalysis";
 import { SalesForecasting } from "@/components/ml/SalesForecasting";
 import { ProductRecommendations } from "@/components/ml/ProductRecommendations";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
