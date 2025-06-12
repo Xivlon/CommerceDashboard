@@ -60,16 +60,16 @@ export default function Dashboard() {
 
   if (metricsLoading || insightsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-8">
-            <div className="h-20 bg-white rounded-xl"></div>
+            <div className="h-20 bg-white dark:bg-gray-800 rounded-xl"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-32 bg-white rounded-xl"></div>
+                <div key={i} className="h-32 bg-white dark:bg-gray-800 rounded-xl"></div>
               ))}
             </div>
-            <div className="h-96 bg-white rounded-xl"></div>
+            <div className="h-96 bg-white dark:bg-gray-800 rounded-xl"></div>
           </div>
         </div>
       </div>
@@ -77,13 +77,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">AI-Powered E-commerce Analytics</h1>
-            <p className="text-gray-600">Real-time insights with Customer CLV, Churn Prediction & Sales Forecasting</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">AI-Powered E-commerce Analytics</h1>
+            <p className="text-gray-600 dark:text-gray-300">Real-time insights with Customer CLV, Churn Prediction & Sales Forecasting</p>
           </div>
           
           <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
@@ -111,6 +111,8 @@ export default function Dashboard() {
             </Select>
             
             <ColorPaletteSelector />
+            
+            <ThemeToggle />
             
             <Button 
               onClick={handleRefresh}
