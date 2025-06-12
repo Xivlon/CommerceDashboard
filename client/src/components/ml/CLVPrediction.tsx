@@ -226,13 +226,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                   </Pie>
                   <Tooltip 
                     formatter={(value, name) => [value, name]}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      color: 'hsl(var(--card-foreground))',
-                      borderRadius: '8px'
-                    }}
-                    labelStyle={{ color: 'hsl(var(--card-foreground))' }}
+                    labelStyle={{ color: '#374151' }}
                   />
                   <Legend 
                     verticalAlign="bottom"
@@ -269,14 +263,14 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
           </div>
 
           <div className="mt-8">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-4">CLV Insights & Trends</h4>
+            <h4 className="font-medium text-gray-900 mb-4">CLV Insights & Trends</h4>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <h5 className="font-semibold text-blue-900 dark:text-blue-100">Growth Opportunities</h5>
+                  <TrendingUp className="h-4 w-4 text-blue-600" />
+                  <h5 className="font-semibold text-blue-900">Growth Opportunities</h5>
                 </div>
-                <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                <div className="space-y-2 text-sm text-blue-800">
                   <div className="flex justify-between items-center">
                     <span>High-value customer growth</span>
                     <span className="font-medium">+23%</span>
@@ -296,12 +290,12 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                 </div>
               </div>
 
-              <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+              <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
                 <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                  <h5 className="font-semibold text-orange-900 dark:text-orange-100">Value at Risk</h5>
+                  <AlertTriangle className="h-4 w-4 text-orange-600" />
+                  <h5 className="font-semibold text-orange-900">Value at Risk</h5>
                 </div>
-                <div className="space-y-2 text-sm text-orange-800 dark:text-orange-200">
+                <div className="space-y-2 text-sm text-orange-800">
                   <div className="flex justify-between items-center">
                     <span>High-value customers at risk</span>
                     <span className="font-medium">12 customers</span>
@@ -321,12 +315,12 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                 </div>
               </div>
 
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                 <div className="flex items-center gap-2 mb-3">
-                  <Target className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  <h5 className="font-semibold text-green-900 dark:text-green-100">Recommended Actions</h5>
+                  <Target className="h-4 w-4 text-green-600" />
+                  <h5 className="font-semibold text-green-900">Recommended Actions</h5>
                 </div>
-                <div className="space-y-2 text-sm text-green-800 dark:text-green-200">
+                <div className="space-y-2 text-sm text-green-800">
                   <div className="flex justify-between items-center">
                     <span>VIP Program Launch</span>
                     <span className="font-medium text-xs">Top 10%</span>
@@ -350,20 +344,13 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
 
           {detailed && (
             <div className="mt-6">
-              <h4 className="font-medium text-gray-900 dark:text-white mb-3">CLV by Segment</h4>
+              <h4 className="font-medium text-gray-900 mb-3">CLV by Segment</h4>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="segment" />
                   <YAxis />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      color: 'hsl(var(--card-foreground))',
-                      borderRadius: '8px'
-                    }}
-                  />
+                  <Tooltip />
                   <Bar dataKey="avgCLV" fill={getChartColors()[1]} />
                 </BarChart>
               </ResponsiveContainer>
