@@ -60,16 +60,16 @@ export default function Dashboard() {
 
   if (metricsLoading || insightsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-black dark:to-black p-6">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-8">
-            <div className="h-20 bg-white dark:bg-gray-800 rounded-xl"></div>
+            <div className="h-20 bg-white dark:bg-blue-900 rounded-xl"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-32 bg-white dark:bg-gray-800 rounded-xl"></div>
+                <div key={i} className="h-32 bg-white dark:bg-blue-900 rounded-xl"></div>
               ))}
             </div>
-            <div className="h-96 bg-white dark:bg-gray-800 rounded-xl"></div>
+            <div className="h-96 bg-white dark:bg-blue-900 rounded-xl"></div>
           </div>
         </div>
       </div>

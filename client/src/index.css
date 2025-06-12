@@ -79,21 +79,21 @@
 .border-theme-neutral { border-color: hsl(var(--theme-neutral)); }
 
 .dark {
-  --background: 222 84% 4.9%;
+  --background: 0 0% 0%;
   --foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
+  --muted: 213 84% 15%;
   --muted-foreground: 215 20% 65%;
-  --popover: 222 84% 4.9%;
+  --popover: 213 84% 15%;
   --popover-foreground: 210 40% 98%;
-  --card: 222 84% 4.9%;
+  --card: 213 84% 15%;
   --card-foreground: 210 40% 98%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
+  --border: 213 84% 15%;
+  --input: 213 84% 15%;
   --primary: 221 83% 53%;
   --primary-foreground: 210 40% 98%;
-  --secondary: 217 33% 17%;
+  --secondary: 213 84% 15%;
   --secondary-foreground: 210 40% 98%;
-  --accent: 217 33% 17%;
+  --accent: 213 84% 15%;
   --accent-foreground: 210 40% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 210 40% 98%;
@@ -166,7 +166,7 @@
   }
   
   .dark .ml-card {
-    @apply bg-gray-800 border border-gray-700;
+    @apply bg-blue-900 border border-blue-800;
   }
   
   .ml-kpi-card {
@@ -275,7 +275,7 @@
   }
   
   .dark .loading-skeleton {
-    @apply bg-gray-700;
+    @apply bg-blue-900;
   }
   
   /* Chart styling */
