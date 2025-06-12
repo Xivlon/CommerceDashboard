@@ -79,30 +79,40 @@
 .border-theme-neutral { border-color: hsl(var(--theme-neutral)); }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
+  --background: 222 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --popover: 222 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --card: 222 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
   --primary: 221 83% 53%;
   --primary-foreground: 210 40% 98%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 212 95% 83%;
   --chart-1: 221 83% 53%;
   --chart-2: 142 76% 36%;
   --chart-3: 262 83% 58%;
   --chart-4: 43 96% 56%;
   --chart-5: 0 84% 60%;
+  
+  /* Dynamic Theme Colors - Dark Mode */
+  --theme-primary: 221 83% 53%; /* #3b82f6 */
+  --theme-secondary: 142 76% 36%; /* #10b981 */
+  --theme-accent: 43 96% 56%; /* #f59e0b */
+  --theme-success: 142 76% 36%; /* #10b981 */
+  --theme-warning: 43 96% 56%; /* #f59e0b */
+  --theme-danger: 0 84% 60%; /* #ef4444 */
+  --theme-info: 262 83% 58%; /* #8b5cf6 */
+  --theme-neutral: 0 0% 60%; /* #999999 */
   
   /* ML Dashboard dark mode colors */
   --ml-blue: 221 83% 53%;
@@ -156,7 +166,7 @@
   }
   
   .dark .ml-card {
-    @apply bg-slate-800;
+    @apply bg-gray-800 border border-gray-700;
   }
   
   .ml-kpi-card {
@@ -276,7 +286,7 @@
   
   .dark .recharts-cartesian-grid-horizontal line,
   .dark .recharts-cartesian-grid-vertical line {
-    @apply stroke-gray-700;
+    @apply stroke-gray-600;
   }
   
   .recharts-tooltip-wrapper {
@@ -284,11 +294,28 @@
   }
   
   .recharts-default-tooltip {
-    @apply bg-white border border-gray-200 rounded-lg shadow-lg;
+    @apply bg-white border border-gray-200 rounded-lg shadow-lg text-gray-900;
   }
   
   .dark .recharts-default-tooltip {
-    @apply bg-gray-800 border-gray-700;
+    @apply bg-gray-800 border-gray-600 text-gray-100;
+  }
+  
+  /* Chart text elements */
+  .recharts-text {
+    @apply fill-gray-600;
+  }
+  
+  .dark .recharts-text {
+    @apply fill-gray-300;
+  }
+  
+  .recharts-legend-item-text {
+    @apply fill-gray-700;
+  }
+  
+  .dark .recharts-legend-item-text {
+    @apply fill-gray-200;
   }
 }
 

@@ -226,7 +226,13 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                   </Pie>
                   <Tooltip 
                     formatter={(value, name) => [value, name]}
-                    labelStyle={{ color: '#374151' }}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      color: 'hsl(var(--card-foreground))',
+                      borderRadius: '8px'
+                    }}
+                    labelStyle={{ color: 'hsl(var(--card-foreground))' }}
                   />
                   <Legend 
                     verticalAlign="bottom"
@@ -263,7 +269,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
           </div>
 
           <div className="mt-8">
-            <h4 className="font-medium text-gray-900 mb-4">CLV Insights & Trends</h4>
+            <h4 className="font-medium text-gray-900 dark:text-white mb-4">CLV Insights & Trends</h4>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center gap-2 mb-3">
@@ -344,13 +350,20 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
 
           {detailed && (
             <div className="mt-6">
-              <h4 className="font-medium text-gray-900 mb-3">CLV by Segment</h4>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-3">CLV by Segment</h4>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="segment" />
                   <YAxis />
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      color: 'hsl(var(--card-foreground))',
+                      borderRadius: '8px'
+                    }}
+                  />
                   <Bar dataKey="avgCLV" fill={getChartColors()[1]} />
                 </BarChart>
               </ResponsiveContainer>
