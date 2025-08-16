@@ -14,7 +14,8 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
-
+import React, { useEffect, useState } from "react";
+import { fetchSalesData, fetchCustomers, Sale, Customer } from "./mockApi";
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [selectedCategory, setSelectedCategory] = useState("all");
