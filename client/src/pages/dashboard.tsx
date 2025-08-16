@@ -12,25 +12,15 @@ import { ProductRecommendations } from "@/components/ml/ProductRecommendations";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/mockApi";
+import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
+
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
-  const { data: dashboardMetrics, isLoading: metricsLoading, refetch: refetchMetrics } = useQuery({
-  queryKey: ["/api/dashboard/metrics"],
-  queryFn: getDashboardMetrics,
-  refetchInterval: 30000,
-});
 
-  const { data: mlInsights, isLoading: insightsLoading, refetch: refetchInsights } = useQuery({
-  queryKey: ["/api/dashboard/insights"],
-  queryFn: getMLInsights,
-  refetchInterval: 60000,
-});
-  
   const { data: dashboardMetrics, isLoading: metricsLoading, refetch: refetchMetrics } = useQuery({
     queryKey: ["/api/dashboard/metrics"],
     refetchInterval: 30000, // Refresh every 30 seconds
