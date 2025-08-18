@@ -1,6 +1,6 @@
 // filepath: wrangler.jsonc
 {
-  "name": "ichter-redirect-worker",
+  "name": "commercemodel",
   "main": "src/index.js",
   "compatibility_date": "2025-08-18"
 }
