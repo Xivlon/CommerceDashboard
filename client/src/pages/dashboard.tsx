@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RefreshCw, Download } from "lucide-react";
+import { RefreshCw, Download, Settings } from "lucide-react";
 import { MLKPICards } from "@/components/ml/MLKPICards";
 import { CLVPrediction } from "@/components/ml/CLVPrediction";
 import { ChurnAnalysis } from "@/components/ml/ChurnAnalysis";
@@ -14,21 +15,27 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
+import { usePreferences } from "@/components/preferences-provider";
+import { REFRESH_INTERVALS } from "@/lib/preferences";
 
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
+  const { preferences } = usePreferences();
+
+  // Get refresh interval from preferences
+  const refreshInterval = REFRESH_INTERVALS[preferences.dashboard.refreshInterval];
 
   const { data: dashboardMetrics, isLoading: metricsLoading, refetch: refetchMetrics } = useQuery({
     queryKey: ["/api/dashboard/metrics"],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: refreshInterval || false,
   });
 
   const { data: mlInsights, isLoading: insightsLoading, refetch: refetchInsights } = useQuery({
     queryKey: ["/api/dashboard/insights"],
-    refetchInterval: 60000, // Refresh every minute
+    refetchInterval: refreshInterval || false,
   });
 
   const handleRefresh = async () => {
@@ -87,6 +94,11 @@ export default function Dashboard() {
           </div>
           
           <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
+            <Link href="/settings">
+              <Button variant="outline" size="icon">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </Link>
             <ThemeToggle />
             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
               <SelectTrigger className="w-40">
