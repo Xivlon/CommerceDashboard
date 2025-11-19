@@ -8,6 +8,7 @@ import { AlertTriangle, Users, Mail, Clock, TrendingDown, RefreshCw, Download, B
 import { getCustomersWithPredictions, getChurnPredictions, analyzeChurnRisk, refreshAllData } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
 import { useColorPalette } from "@/hooks/use-color-palette";
+import { useDomain } from "@/contexts/domain-context";
 
 interface ChurnAnalysisProps {
   period: string;
@@ -18,6 +19,13 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { getChartColors } = useColorPalette();
+  const { domainConfig, getEntityLabel } = useDomain();
+
+  // Get domain-specific terminology
+  const entityNameSingular = getEntityLabel('primary', false);
+  const entityNamePlural = getEntityLabel('primary', true);
+  const churnModel = domainConfig.models.find(m => m.id.includes('churn') || m.id.includes('dropout') || m.id.includes('readmission'));
+  const churnLabel = churnModel?.outputs.find(o => o.id.includes('risk'))?.label || 'Risk Score';
 
   const { data: customers, isLoading: customersLoading } = useQuery({
     queryKey: ["/api/customers", { predictions: true, period }],
@@ -151,13 +159,13 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Churn Risk Analysis</CardTitle>
+          <CardTitle>{churnModel?.name || 'Risk Analysis'}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <Users className="h-16 w-16 mb-4" />
-            <p className="text-lg font-medium">No customer data available</p>
-            <p className="text-sm">Churn analysis will appear here once data is available.</p>
+            <p className="text-lg font-medium">No {entityNamePlural.toLowerCase()} data available</p>
+            <p className="text-sm">Risk analysis will appear here once data is available.</p>
           </div>
         </CardContent>
       </Card>
@@ -210,7 +218,7 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Customer Churn Risk Analysis</CardTitle>
+            <CardTitle>{entityNameSingular} {churnModel?.name || 'Risk Analysis'}</CardTitle>
             <div className="flex items-center gap-4">
               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                 Last Updated: 2 hours ago
@@ -359,7 +367,7 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>High-Risk Customers</CardTitle>
+            <CardTitle>High-Risk {entityNamePlural}</CardTitle>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-theme-danger" />
@@ -380,19 +388,19 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
         <CardContent>
           {highRiskCustomers.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-32 text-muted-foreground">
-              <p>No high-risk customers identified</p>
-              <p className="text-sm">Great! Your customer retention is performing well.</p>
+              <p>No high-risk {entityNamePlural.toLowerCase()} identified</p>
+              <p className="text-sm">Great! Your {entityNamePlural.toLowerCase()} are performing well.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Customer</TableHead>
-                    <TableHead className="text-center">Risk Score</TableHead>
-                    <TableHead className="text-center">Last Purchase</TableHead>
-                    <TableHead className="text-right">Revenue at Risk</TableHead>
-                    <TableHead className="text-center">Segment</TableHead>
+                    <TableHead>{entityNameSingular}</TableHead>
+                    <TableHead className="text-center">{churnLabel}</TableHead>
+                    <TableHead className="text-center">Last Activity</TableHead>
+                    <TableHead className="text-right">Value at Risk</TableHead>
+                    <TableHead className="text-center">Category</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -472,11 +480,11 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 bg-theme-danger/10 rounded-lg border border-theme-danger/20">
-                  <p className="text-sm text-muted-foreground">Revenue at Risk</p>
+                  <p className="text-sm text-muted-foreground">Value at Risk</p>
                   <p className="text-lg font-bold text-theme-danger">
                     ${Math.round(highRiskCustomers.reduce((sum, c) => sum + parseFloat(c.totalSpent), 0)).toLocaleString()}
                   </p>
-                  <p className="text-xs text-muted-foreground">High-risk customers</p>
+                  <p className="text-xs text-muted-foreground">High-risk {entityNamePlural.toLowerCase()}</p>
                 </div>
                 <div className="p-3 bg-theme-warning/10 rounded-lg border border-theme-warning/20">
                   <p className="text-sm text-muted-foreground">Avg. Risk Score</p>
@@ -495,12 +503,12 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
               <div className="p-3 bg-theme-secondary/10 rounded-lg border border-theme-secondary/20">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingDown className="w-4 h-4 text-theme-secondary" />
-                  <p className="font-medium text-theme-secondary">Retention Strategy</p>
+                  <p className="font-medium text-theme-secondary">Action Strategy</p>
                 </div>
                 <div className="space-y-1 text-sm text-foreground">
-                  <p>• Send personalized win-back emails within 48 hours</p>
-                  <p>• Offer 15-20% discount on next purchase</p>
-                  <p>• Schedule follow-up call for high-value customers</p>
+                  <p>• Reach out to high-risk {entityNamePlural.toLowerCase()} within 48 hours</p>
+                  <p>• Personalize engagement based on risk factors</p>
+                  <p>• Schedule follow-up for high-value {entityNamePlural.toLowerCase()}</p>
                 </div>
               </div>
             </div>
