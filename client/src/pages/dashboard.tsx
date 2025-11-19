@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RefreshCw, Download, Settings } from "lucide-react";
+import { RefreshCw, Download, Settings, Database } from "lucide-react";
 import { MLKPICards } from "@/components/ml/MLKPICards";
 import { CLVPrediction } from "@/components/ml/CLVPrediction";
 import { ChurnAnalysis } from "@/components/ml/ChurnAnalysis";
@@ -94,6 +94,12 @@ export default function Dashboard() {
           </div>
           
           <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
+            <Link href="/data-sources">
+              <Button variant="outline">
+                <Database className="h-4 w-4 mr-2" />
+                Custom Data
+              </Button>
+            </Link>
             <Link href="/settings">
               <Button variant="outline" size="icon">
                 <Settings className="h-4 w-4" />

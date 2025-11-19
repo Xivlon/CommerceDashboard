@@ -8,6 +8,8 @@ import { PreferencesProvider } from "@/components/preferences-provider";
 import Dashboard from "@/pages/dashboard";
 import Settings from "@/pages/settings";
 import Plugins from "@/pages/plugins";
+import DataSources from "@/pages/data-sources";
+import CustomDashboard from "@/pages/custom-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +18,8 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/settings" component={Settings} />
       <Route path="/plugins" component={Plugins} />
+      <Route path="/data-sources" component={DataSources} />
+      <Route path="/custom-dashboard/:schemaId" component={CustomDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
