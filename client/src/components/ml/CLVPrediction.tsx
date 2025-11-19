@@ -264,77 +264,77 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
           <div className="mt-8">
             <h4 className="font-medium text-foreground mb-4">CLV Insights & Trends</h4>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="p-4 bg-theme-primary/10 rounded-lg border border-theme-primary/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="h-4 w-4 text-blue-600" />
-                  <h5 className="font-semibold text-blue-900">Growth Opportunities</h5>
+                  <TrendingUp className="h-4 w-4 text-theme-primary" />
+                  <h5 className="font-semibold text-foreground">Growth Opportunities</h5>
                 </div>
-                <div className="space-y-2 text-sm text-blue-800">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex justify-between items-center">
                     <span>High-value customer growth</span>
-                    <span className="font-medium">+23%</span>
+                    <span className="font-medium text-theme-primary">+23%</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Cross-sell revenue potential</span>
-                    <span className="font-medium">$127K</span>
+                    <span className="font-medium text-theme-primary">$127K</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Premium upgrade candidates</span>
-                    <span className="font-medium">45 customers</span>
+                    <span className="font-medium text-theme-primary">45 customers</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Loyalty program CLV impact</span>
-                    <span className="font-medium">+32%</span>
+                    <span className="font-medium text-theme-primary">+32%</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <div className="p-4 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle className="h-4 w-4 text-orange-600" />
-                  <h5 className="font-semibold text-orange-900">Value at Risk</h5>
+                  <AlertTriangle className="h-4 w-4 text-theme-accent" />
+                  <h5 className="font-semibold text-foreground">Value at Risk</h5>
                 </div>
-                <div className="space-y-2 text-sm text-orange-800">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex justify-between items-center">
                     <span>High-value customers at risk</span>
-                    <span className="font-medium">12 customers</span>
+                    <span className="font-medium text-theme-accent">12 customers</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Potential revenue loss</span>
-                    <span className="font-medium">$89K</span>
+                    <span className="font-medium text-theme-accent">$89K</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Seasonal CLV impact</span>
-                    <span className="font-medium">-15%</span>
+                    <span className="font-medium text-theme-accent">-15%</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Price sensitive segment</span>
-                    <span className="font-medium">Medium tier</span>
+                    <span className="font-medium text-theme-accent">Medium tier</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="p-4 bg-theme-success/10 rounded-lg border border-theme-success/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <Target className="h-4 w-4 text-green-600" />
-                  <h5 className="font-semibold text-green-900">Recommended Actions</h5>
+                  <Target className="h-4 w-4 text-theme-success" />
+                  <h5 className="font-semibold text-foreground">Recommended Actions</h5>
                 </div>
-                <div className="space-y-2 text-sm text-green-800">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex justify-between items-center">
                     <span>VIP Program Launch</span>
-                    <span className="font-medium text-xs">Top 10%</span>
+                    <span className="font-medium text-theme-success text-xs">Top 10%</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Retention Campaigns</span>
-                    <span className="font-medium text-xs">Personalized</span>
+                    <span className="font-medium text-theme-success text-xs">Personalized</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Product Bundling</span>
-                    <span className="font-medium text-xs">Medium tier</span>
+                    <span className="font-medium text-theme-success text-xs">Medium tier</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Onboarding Optimization</span>
-                    <span className="font-medium text-xs">New growth</span>
+                    <span className="font-medium text-theme-success text-xs">New growth</span>
                   </div>
                 </div>
               </div>

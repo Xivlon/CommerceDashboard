@@ -87,15 +87,15 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
   const growthRate = ((totalPredictedRevenue / parseInt(forecastDays) - avgDailyRevenue) / avgDailyRevenue) * 100;
 
   const seasonalFactors = [
-    { factor: 'Holiday Season', impact: '+18%', color: 'text-green-600' },
-    { factor: 'Back to School', impact: '+8%', color: 'text-blue-600' },
-    { factor: 'Summer Lull', impact: '-12%', color: 'text-red-600' }
+    { factor: 'Holiday Season', impact: '+18%', color: 'text-theme-success' },
+    { factor: 'Back to School', impact: '+8%', color: 'text-theme-primary' },
+    { factor: 'Summer Lull', impact: '-12%', color: 'text-theme-accent' }
   ];
 
   const marketTrends = [
-    { trend: 'Economic Index', status: 'Neutral', color: 'text-yellow-600' },
-    { trend: 'Competition', status: 'High', color: 'text-red-600' },
-    { trend: 'Marketing ROI', status: 'Strong', color: 'text-green-600' }
+    { trend: 'Economic Index', status: 'Neutral', color: 'text-theme-secondary' },
+    { trend: 'Competition', status: 'High', color: 'text-theme-accent' },
+    { trend: 'Marketing ROI', status: 'Strong', color: 'text-theme-success' }
   ];
 
   return (
@@ -231,15 +231,15 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                     Risk Scenarios
                   </h4>
                   <div className="space-y-2">
-                    <div className="p-2 bg-green-50 rounded text-xs">
-                      <span className="font-medium text-green-800">Best Case:</span>
-                      <span className="text-green-700 ml-1">
+                    <div className="p-2 bg-theme-success/10 rounded text-xs border border-theme-success/20">
+                      <span className="font-medium text-theme-success">Best Case:</span>
+                      <span className="text-theme-success ml-1">
                         ${((totalPredictedRevenue * 1.23) / 1000).toFixed(0)}K (+23%)
                       </span>
                     </div>
-                    <div className="p-2 bg-red-50 rounded text-xs">
-                      <span className="font-medium text-red-800">Worst Case:</span>
-                      <span className="text-red-700 ml-1">
+                    <div className="p-2 bg-theme-accent/10 rounded text-xs border border-theme-accent/20">
+                      <span className="font-medium text-theme-accent">Worst Case:</span>
+                      <span className="text-theme-accent ml-1">
                         ${((totalPredictedRevenue * 0.92) / 1000).toFixed(0)}K (-8%)
                       </span>
                     </div>
