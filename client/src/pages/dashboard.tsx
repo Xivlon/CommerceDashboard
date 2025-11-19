@@ -11,11 +11,13 @@ import { ChurnAnalysis } from "@/components/ml/ChurnAnalysis";
 import { SalesForecasting } from "@/components/ml/SalesForecasting";
 import { ProductRecommendations } from "@/components/ml/ProductRecommendations";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
+import { DomainSelector } from "@/components/ui/domain-selector";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
 import { usePreferences } from "@/components/preferences-provider";
+import { useDomain } from "@/contexts/domain-context";
 import { REFRESH_INTERVALS } from "@/lib/preferences";
 
 export default function Dashboard() {
@@ -24,6 +26,7 @@ export default function Dashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
   const { preferences } = usePreferences();
+  const { domainConfig, getTerminology, getEntityLabel } = useDomain();
 
   // Get refresh interval from preferences
   const refreshInterval = REFRESH_INTERVALS[preferences.dashboard.refreshInterval];
@@ -89,11 +92,16 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">AI-Powered E-commerce Analytics</h1>
-            <p className="text-gray-600 dark:text-gray-300">Real-time insights with Customer CLV, Churn Prediction & Sales Forecasting</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              {getTerminology('dashboardTitle')}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              {domainConfig.description}
+            </p>
           </div>
           
           <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
+            <DomainSelector />
             <Link href="/data-sources">
               <Button variant="outline">
                 <Database className="h-4 w-4 mr-2" />

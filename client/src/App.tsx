@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PreferencesProvider } from "@/components/preferences-provider";
+import { DomainProvider } from "@/contexts/domain-context";
 import Dashboard from "@/pages/dashboard";
 import Settings from "@/pages/settings";
 import Plugins from "@/pages/plugins";
@@ -29,12 +30,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="ml-dashboard-theme">
-        <PreferencesProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </PreferencesProvider>
+        <DomainProvider>
+          <PreferencesProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+            </TooltipProvider>
+          </PreferencesProvider>
+        </DomainProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
