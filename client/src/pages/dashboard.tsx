@@ -70,16 +70,16 @@ export default function Dashboard() {
 
   if (metricsLoading || insightsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-8">
-            <div className="h-20 bg-white dark:bg-slate-800 rounded-xl"></div>
+            <div className="h-20 bg-card rounded-xl"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-32 bg-white rounded-xl"></div>
+                <div key={i} className="h-32 bg-card rounded-xl"></div>
               ))}
             </div>
-            <div className="h-96 bg-white rounded-xl"></div>
+            <div className="h-96 bg-card rounded-xl"></div>
           </div>
         </div>
       </div>
@@ -87,15 +87,15 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               {getTerminology('dashboardTitle')}
             </h1>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-muted-foreground">
               {domainConfig.description}
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function Dashboard() {
         {/* ML Insights Cards */}
         {mlInsights && mlInsights.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">AI-Powered Business Insights</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-6">AI-Powered Business Insights</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mlInsights.map((insight, index) => (
                 <div 
@@ -215,7 +215,7 @@ export default function Dashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="grid w-full lg:w-auto lg:grid-cols-5 bg-white">
+          <TabsList className="grid w-full lg:w-auto lg:grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="clv">Customer CLV</TabsTrigger>
             <TabsTrigger value="churn">Churn Analysis</TabsTrigger>

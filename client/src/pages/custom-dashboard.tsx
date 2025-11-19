@@ -39,7 +39,7 @@ export default function CustomDashboard() {
 
   if (!schema) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6">
         <div className="container mx-auto max-w-7xl">
           <Card>
             <CardContent className="py-16 text-center">
@@ -80,7 +80,7 @@ export default function CustomDashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6">
       <div className="container mx-auto max-w-7xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
