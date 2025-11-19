@@ -189,6 +189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const metrics = await storage.getDashboardMetrics();
       res.json(metrics);
     } catch (error) {
+      console.error("Error fetching dashboard metrics:", error);
       res.status(500).json({ error: "Failed to fetch dashboard metrics" });
     }
   });
@@ -198,6 +199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const insights = await storage.getMLInsights();
       res.json(insights);
     } catch (error) {
+      console.error("Error fetching ML insights:", error);
       res.status(500).json({ error: "Failed to fetch ML insights" });
     }
   });
