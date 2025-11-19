@@ -16,7 +16,7 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
         {[...Array(5)].map((_, i) => (
           <Card key={i} className="animate-pulse">
             <CardContent className="p-6">
-              <div className="h-20 bg-gray-200 rounded"></div>
+              <div className="h-20 bg-muted rounded"></div>
             </CardContent>
           </Card>
         ))}
@@ -83,8 +83,8 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-gray-500 text-sm font-medium">{card.title}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
+                <p className="text-muted-foreground text-sm font-medium">{card.title}</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{card.value}</p>
                 <div className="mt-2">
                   {card.badge ? (
                     <Badge className={`text-xs text-white ${card.badgeColor}`}>
@@ -92,9 +92,9 @@ export function MLKPICards({ metrics }: MLKPICardsProps) {
                     </Badge>
                   ) : (
                     <p className={`text-sm flex items-center ${
-                      card.changeType === 'positive' ? 'text-green-600' :
-                      card.changeType === 'negative' ? 'text-red-600' :
-                      'text-gray-600'
+                      card.changeType === 'positive' ? 'text-theme-success' :
+                      card.changeType === 'negative' ? 'text-theme-danger' :
+                      'text-muted-foreground'
                     }`}>
                       {card.changeType === 'positive' && <TrendingUp className="w-4 h-4 mr-1" />}
                       {card.changeType === 'negative' && <AlertTriangle className="w-4 h-4 mr-1" />}
