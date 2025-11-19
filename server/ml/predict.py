@@ -1,4 +1,4 @@
-#(import pickle
+import pickle
 import numpy as np
 
 # Load the trained model

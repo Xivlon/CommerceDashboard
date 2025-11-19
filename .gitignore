@@ -4,3 +4,34 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.pkl
+venv/
+.python-version
+
+# Database
+*.db
+*.sqlite
