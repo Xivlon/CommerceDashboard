@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { usePreferences } from "@/components/preferences-provider";
-import { Palette, Type, Spacing, Radius, Download, Upload } from "lucide-react";
+import { Palette, Type, Grid3x3, Radius, Download, Upload } from "lucide-react";
 
 interface ThemeColors {
   primary: string;
@@ -123,7 +123,7 @@ export function AdvancedThemeCustomizer() {
               Typography
             </TabsTrigger>
             <TabsTrigger value="spacing">
-              <Spacing className="h-4 w-4 mr-2" />
+            <Grid3x3 className="h-4 w-4 mr-2" />
               Spacing
             </TabsTrigger>
             <TabsTrigger value="export">
