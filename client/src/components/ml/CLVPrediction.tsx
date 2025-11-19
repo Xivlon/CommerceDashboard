@@ -98,10 +98,10 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-muted rounded"></div>
             <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-4 bg-gray-200 rounded"></div>
+                <div key={i} className="h-4 bg-muted rounded"></div>
               ))}
             </div>
           </div>
@@ -117,7 +117,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
           <CardTitle>Customer Lifetime Value Prediction</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <Users className="h-16 w-16 mb-4" />
             <p className="text-lg font-medium">No customer data available</p>
             <p className="text-sm">Customer predictions will appear here once data is available.</p>
@@ -224,9 +224,8 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value, name) => [value, name]}
-                    labelStyle={{ color: '#374151' }}
                   />
                   <Legend 
                     verticalAlign="bottom"
@@ -244,26 +243,26 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 text-center">
                 <div className="p-3 bg-theme-success/10 rounded-lg border border-theme-success/20">
-                  <p className="text-sm text-gray-600">High Value</p>
+                  <p className="text-sm text-muted-foreground">High Value</p>
                   <p className="text-lg font-bold text-theme-success">{clvSegments.high}</p>
-                  <p className="text-xs text-gray-500">CLV {'>'} $2K</p>
+                  <p className="text-xs text-muted-foreground">CLV {'>'} $2K</p>
                 </div>
                 <div className="p-3 bg-theme-primary/10 rounded-lg border border-theme-primary/20">
-                  <p className="text-sm text-gray-600">Medium Value</p>
+                  <p className="text-sm text-muted-foreground">Medium Value</p>
                   <p className="text-lg font-bold text-theme-primary">{clvSegments.medium}</p>
-                  <p className="text-xs text-gray-500">CLV $500-$2K</p>
+                  <p className="text-xs text-muted-foreground">CLV $500-$2K</p>
                 </div>
                 <div className="p-3 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
-                  <p className="text-sm text-gray-600">Low Value</p>
+                  <p className="text-sm text-muted-foreground">Low Value</p>
                   <p className="text-lg font-bold text-theme-accent">{clvSegments.low}</p>
-                  <p className="text-xs text-gray-500">CLV under $500</p>
+                  <p className="text-xs text-muted-foreground">CLV under $500</p>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="mt-8">
-            <h4 className="font-medium text-gray-900 mb-4">CLV Insights & Trends</h4>
+            <h4 className="font-medium text-foreground mb-4">CLV Insights & Trends</h4>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center gap-2 mb-3">
@@ -344,7 +343,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
 
           {detailed && (
             <div className="mt-6">
-              <h4 className="font-medium text-gray-900 mb-3">CLV by Segment</h4>
+              <h4 className="font-medium text-foreground mb-3">CLV by Segment</h4>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -365,13 +364,13 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
             <CardTitle>Top CLV Predictions</CardTitle>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
-              <span className="text-sm text-gray-500">Sorted by predicted value</span>
+              <span className="text-sm text-muted-foreground">Sorted by predicted value</span>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           {topCLVCustomers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-gray-500">
+            <div className="flex flex-col items-center justify-center h-32 text-muted-foreground">
               <p>No CLV predictions available</p>
               <p className="text-sm">Predictions will be generated automatically</p>
             </div>
@@ -397,8 +396,8 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                             {customer.name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">{customer.name}</p>
-                            <p className="text-sm text-gray-500">{customer.email}</p>
+                            <p className="font-medium text-foreground">{customer.name}</p>
+                            <p className="text-sm text-muted-foreground">{customer.email}</p>
                           </div>
                         </div>
                       </TableCell>
@@ -411,7 +410,7 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                             ${customer.predictedCLV ? customer.predictedCLV.toLocaleString() : 'N/A'}
                           </span>
                           {customer.predictedCLV && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               {customer.predictedCLV > parseFloat(customer.totalSpent) ? '+' : ''}
                               {(((customer.predictedCLV - parseFloat(customer.totalSpent)) / parseFloat(customer.totalSpent)) * 100).toFixed(1)}%
                             </p>
@@ -427,14 +426,14 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge 
-                          variant="outline" 
+                        <Badge
+                          variant="outline"
                           className={
-                            (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 2000 
-                              ? "bg-green-100 text-green-800" 
-                              : (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 500 
-                              ? "bg-blue-100 text-blue-800" 
-                              : "bg-gray-100 text-gray-800"
+                            (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 2000
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              : (customer.predictedCLV || parseFloat(customer.totalSpent)) >= 500
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                              : "bg-muted text-muted-foreground"
                           }
                         >
                           {(customer.predictedCLV || parseFloat(customer.totalSpent)) >= 2000 

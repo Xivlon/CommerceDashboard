@@ -35,10 +35,10 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-muted rounded"></div>
             <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-4 bg-gray-200 rounded"></div>
+                <div key={i} className="h-4 bg-muted rounded"></div>
               ))}
             </div>
           </div>
@@ -54,7 +54,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
           <CardTitle>Sales Forecasting & Trends</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <BarChart3 className="h-16 w-16 mb-4" />
             <p className="text-lg font-medium">No sales data available</p>
             <p className="text-sm">Sales forecasts will appear here once data is available.</p>
@@ -162,26 +162,26 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
           </div>
 
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600">Predicted Revenue</p>
-              <p className="text-lg font-bold text-blue-600">
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+              <p className="text-sm text-muted-foreground">Predicted Revenue</p>
+              <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                 ${(totalPredictedRevenue / 1000).toFixed(0)}K
               </p>
-              <p className="text-xs text-gray-500">Next {forecastDays} days</p>
+              <p className="text-xs text-muted-foreground">Next {forecastDays} days</p>
             </div>
-            <div className="p-3 bg-green-50 rounded-lg">
-              <p className="text-sm text-gray-600">Growth Rate</p>
-              <p className="text-lg font-bold text-green-600">
+            <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+              <p className="text-sm text-muted-foreground">Growth Rate</p>
+              <p className="text-lg font-bold text-green-600 dark:text-green-400">
                 {growthRate > 0 ? '+' : ''}{growthRate.toFixed(1)}%
               </p>
-              <p className="text-xs text-gray-500">vs last period</p>
+              <p className="text-xs text-muted-foreground">vs last period</p>
             </div>
-            <div className="p-3 bg-purple-50 rounded-lg">
-              <p className="text-sm text-gray-600">Confidence</p>
-              <p className="text-lg font-bold text-purple-600">
+            <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+              <p className="text-sm text-muted-foreground">Confidence</p>
+              <p className="text-lg font-bold text-purple-600 dark:text-purple-400">
                 {(forecastData.confidence * 100).toFixed(0)}%
               </p>
-              <p className="text-xs text-gray-500">Model accuracy</p>
+              <p className="text-xs text-muted-foreground">Model accuracy</p>
             </div>
           </div>
         </CardContent>
@@ -196,14 +196,14 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
             <CardContent>
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
+                  <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     Seasonal Impact
                   </h4>
                   <div className="space-y-2">
                     {seasonalFactors.map((factor, index) => (
                       <div key={index} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{factor.factor}</span>
+                        <span className="text-sm text-muted-foreground">{factor.factor}</span>
                         <span className={`text-sm font-medium ${factor.color}`}>{factor.impact}</span>
                       </div>
                     ))}
@@ -211,14 +211,14 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
+                  <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                     <TrendingUp className="h-4 w-4" />
                     Market Trends
                   </h4>
                   <div className="space-y-2">
                     {marketTrends.map((trend, index) => (
                       <div key={index} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{trend.trend}</span>
+                        <span className="text-sm text-muted-foreground">{trend.trend}</span>
                         <span className={`text-sm font-medium ${trend.color}`}>{trend.status}</span>
                       </div>
                     ))}
@@ -226,7 +226,7 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
+                  <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                     <Target className="h-4 w-4" />
                     Risk Scenarios
                   </h4>
@@ -255,27 +255,27 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm font-medium text-gray-700">R² Score</span>
-                  <span className="text-sm font-bold text-blue-600">
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <span className="text-sm font-medium text-foreground">R² Score</span>
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
                     {forecastData.modelMetrics?.r2?.toFixed(2) || '0.89'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm font-medium text-gray-700">MAPE</span>
-                  <span className="text-sm font-bold text-green-600">
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <span className="text-sm font-medium text-foreground">MAPE</span>
+                  <span className="text-sm font-bold text-green-600 dark:text-green-400">
                     {forecastData.modelMetrics?.mape?.toFixed(1) || '8.7'}%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm font-medium text-gray-700">RMSE</span>
-                  <span className="text-sm font-bold text-purple-600">
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <span className="text-sm font-medium text-foreground">RMSE</span>
+                  <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
                     ${forecastData.modelMetrics?.rmse?.toLocaleString() || '12,300'}
                   </span>
                 </div>
-                
+
                 <div className="mt-6 pt-4 border-t">
-                  <p className="text-xs text-gray-500 mb-2">Model Features:</p>
+                  <p className="text-xs text-muted-foreground mb-2">Model Features:</p>
                   <div className="flex flex-wrap gap-1">
                     {['Seasonality', 'Trends', 'Holidays', 'Marketing', 'Competition'].map((feature) => (
                       <Badge key={feature} variant="outline" className="text-xs border-theme-secondary text-theme-secondary">
