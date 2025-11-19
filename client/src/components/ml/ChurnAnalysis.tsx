@@ -135,10 +135,10 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-muted rounded"></div>
             <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-4 bg-gray-200 rounded"></div>
+                <div key={i} className="h-4 bg-muted rounded"></div>
               ))}
             </div>
           </div>
@@ -154,7 +154,7 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
           <CardTitle>Churn Risk Analysis</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <Users className="h-16 w-16 mb-4" />
             <p className="text-lg font-medium">No customer data available</p>
             <p className="text-sm">Churn analysis will appear here once data is available.</p>
@@ -222,35 +222,35 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Risk Summary */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Risk Summary</h3>
+              <h3 className="text-lg font-semibold text-foreground">Risk Summary</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+                <div className="flex items-center justify-between p-3 bg-theme-danger/10 rounded-lg border border-theme-danger/20">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">High Risk</span>
+                    <div className="w-3 h-3 bg-theme-danger rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">High Risk</span>
                   </div>
-                  <span className="font-bold text-red-600">{churnSegments.high}</span>
+                  <span className="font-bold text-theme-danger">{churnSegments.high}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div className="flex items-center justify-between p-3 bg-theme-warning/10 rounded-lg border border-theme-warning/20">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Medium Risk</span>
+                    <div className="w-3 h-3 bg-theme-warning rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">Medium Risk</span>
                   </div>
-                  <span className="font-bold text-yellow-600">{churnSegments.medium}</span>
+                  <span className="font-bold text-theme-warning">{churnSegments.medium}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between p-3 bg-theme-success/10 rounded-lg border border-theme-success/20">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Low Risk</span>
+                    <div className="w-3 h-3 bg-theme-success rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">Low Risk</span>
                   </div>
-                  <span className="font-bold text-green-600">{churnSegments.low}</span>
+                  <span className="font-bold text-theme-success">{churnSegments.low}</span>
                 </div>
               </div>
             </div>
 
             {/* Churn Risk Over Time */}
             <div className="lg:col-span-3">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Churn Risk Trends</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Churn Risk Trends</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={trendData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -303,12 +303,12 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
 
             {/* Churn Prevention Insights */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <div className="p-4 bg-theme-info/10 rounded-lg border border-theme-info/20">
+                <h4 className="font-semibold text-theme-info mb-2 flex items-center gap-2">
                   <Clock className="h-4 w-4" />
                   Early Warning Signals
                 </h4>
-                <div className="space-y-2 text-sm text-blue-800">
+                <div className="space-y-2 text-sm text-foreground">
                   <p>• 30+ days since last purchase</p>
                   <p>• Declining order frequency (-40%)</p>
                   <p>• Reduced engagement with emails</p>
@@ -316,12 +316,12 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                 </div>
               </div>
 
-              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <h4 className="font-semibold text-purple-900 mb-2 flex items-center gap-2">
+              <div className="p-4 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
+                <h4 className="font-semibold text-theme-accent mb-2 flex items-center gap-2">
                   <TrendingDown className="h-4 w-4" />
                   Churn Risk Factors
                 </h4>
-                <div className="space-y-2 text-sm text-purple-800">
+                <div className="space-y-2 text-sm text-foreground">
                   <p>• Support ticket volume increase</p>
                   <p>• Price sensitivity indicators</p>
                   <p>• Competitor activity detection</p>
@@ -331,24 +331,24 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
             </div>
 
             {/* Model Performance Metrics */}
-            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <h4 className="font-semibold text-gray-900 mb-3">Model Performance</h4>
+            <div className="p-4 bg-muted/50 rounded-lg border border-border">
+              <h4 className="font-semibold text-foreground mb-3">Model Performance</h4>
               <div className="grid grid-cols-4 gap-4 text-center">
                 <div>
-                  <p className="text-sm text-gray-600">Precision</p>
-                  <p className="text-lg font-bold text-green-600">{(modelAccuracy * 100).toFixed(1)}%</p>
+                  <p className="text-sm text-muted-foreground">Precision</p>
+                  <p className="text-lg font-bold text-theme-success">{(modelAccuracy * 100).toFixed(1)}%</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Recall</p>
-                  <p className="text-lg font-bold text-blue-600">84.2%</p>
+                  <p className="text-sm text-muted-foreground">Recall</p>
+                  <p className="text-lg font-bold text-theme-info">84.2%</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">F1-Score</p>
-                  <p className="text-lg font-bold text-purple-600">83.8%</p>
+                  <p className="text-sm text-muted-foreground">F1-Score</p>
+                  <p className="text-lg font-bold text-theme-accent">83.8%</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">AUC-ROC</p>
-                  <p className="text-lg font-bold text-orange-600">89.1%</p>
+                  <p className="text-sm text-muted-foreground">AUC-ROC</p>
+                  <p className="text-lg font-bold text-theme-warning">89.1%</p>
                 </div>
               </div>
             </div>
@@ -363,11 +363,11 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-theme-danger" />
-                <span className="text-sm text-gray-500">Requires immediate attention</span>
+                <span className="text-sm text-muted-foreground">Requires immediate attention</span>
               </div>
-              <Button 
-                size="sm" 
-                className="bg-red-600 hover:bg-red-700"
+              <Button
+                size="sm"
+                variant="destructive"
                 onClick={handleSendRetentionCampaign}
                 disabled={highRiskCustomers.length === 0}
               >
@@ -379,7 +379,7 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
         </CardHeader>
         <CardContent>
           {highRiskCustomers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-gray-500">
+            <div className="flex flex-col items-center justify-center h-32 text-muted-foreground">
               <p>No high-risk customers identified</p>
               <p className="text-sm">Great! Your customer retention is performing well.</p>
             </div>
@@ -412,8 +412,8 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                               {customer.name.split(' ').map(n => n[0]).join('')}
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">{customer.name}</p>
-                              <p className="text-sm text-gray-500">{customer.email}</p>
+                              <p className="font-medium text-foreground">{customer.name}</p>
+                              <p className="text-sm text-muted-foreground">{customer.email}</p>
                             </div>
                           </div>
                         </TableCell>
@@ -435,13 +435,13 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
                           ${parseFloat(customer.totalSpent).toLocaleString()}
                         </TableCell>
                         <TableCell className="text-center">
-                          <Badge variant="outline" className="border-red-300 text-red-700">
+                          <Badge variant="outline" className="border-theme-danger/50 text-theme-danger">
                             {customer.segment.toUpperCase()}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center gap-2 justify-end">
-                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
+                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-theme-danger hover:text-theme-danger/80">
                               <Mail className="h-4 w-4" />
                             </Button>
                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
@@ -459,45 +459,45 @@ export function ChurnAnalysis({ period, detailed = false }: ChurnAnalysisProps) 
 
           {highRiskCustomers.length > 0 && (
             <div className="mt-4 space-y-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
+              <div className="p-4 bg-theme-info/10 rounded-lg border border-theme-info/20">
                 <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className="w-4 h-4 text-blue-600" />
-                  <p className="font-medium text-blue-900">AI Recommendation</p>
+                  <AlertTriangle className="w-4 h-4 text-theme-info" />
+                  <p className="font-medium text-theme-info">AI Recommendation</p>
                 </div>
-                <p className="text-sm text-blue-800">
-                  Focus retention campaigns on high-risk segment. Predicted ROI: 340%. 
+                <p className="text-sm text-foreground">
+                  Focus retention campaigns on high-risk segment. Predicted ROI: 340%.
                   Consider offering personalized discounts or loyalty program enrollment.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-3 gap-4">
-                <div className="p-3 bg-red-50 rounded-lg border border-red-200">
-                  <p className="text-sm text-gray-600">Revenue at Risk</p>
-                  <p className="text-lg font-bold text-red-600">
+                <div className="p-3 bg-theme-danger/10 rounded-lg border border-theme-danger/20">
+                  <p className="text-sm text-muted-foreground">Revenue at Risk</p>
+                  <p className="text-lg font-bold text-theme-danger">
                     ${Math.round(highRiskCustomers.reduce((sum, c) => sum + parseFloat(c.totalSpent), 0)).toLocaleString()}
                   </p>
-                  <p className="text-xs text-gray-500">High-risk customers</p>
+                  <p className="text-xs text-muted-foreground">High-risk customers</p>
                 </div>
-                <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
-                  <p className="text-sm text-gray-600">Avg. Risk Score</p>
-                  <p className="text-lg font-bold text-orange-600">
+                <div className="p-3 bg-theme-warning/10 rounded-lg border border-theme-warning/20">
+                  <p className="text-sm text-muted-foreground">Avg. Risk Score</p>
+                  <p className="text-lg font-bold text-theme-warning">
                     {Math.round(highRiskCustomers.reduce((sum, c) => sum + (c.churnRiskScore || 0.8), 0) / highRiskCustomers.length * 100)}%
                   </p>
-                  <p className="text-xs text-gray-500">Needs attention</p>
+                  <p className="text-xs text-muted-foreground">Needs attention</p>
                 </div>
-                <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <p className="text-sm text-gray-600">Time to Act</p>
-                  <p className="text-lg font-bold text-yellow-600">7-14 days</p>
-                  <p className="text-xs text-gray-500">Optimal window</p>
+                <div className="p-3 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
+                  <p className="text-sm text-muted-foreground">Time to Act</p>
+                  <p className="text-lg font-bold text-theme-accent">7-14 days</p>
+                  <p className="text-xs text-muted-foreground">Optimal window</p>
                 </div>
               </div>
-              
-              <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+
+              <div className="p-3 bg-theme-secondary/10 rounded-lg border border-theme-secondary/20">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrendingDown className="w-4 h-4 text-purple-600" />
-                  <p className="font-medium text-purple-900">Retention Strategy</p>
+                  <TrendingDown className="w-4 h-4 text-theme-secondary" />
+                  <p className="font-medium text-theme-secondary">Retention Strategy</p>
                 </div>
-                <div className="space-y-1 text-sm text-purple-800">
+                <div className="space-y-1 text-sm text-foreground">
                   <p>• Send personalized win-back emails within 48 hours</p>
                   <p>• Offer 15-20% discount on next purchase</p>
                   <p>• Schedule follow-up call for high-value customers</p>

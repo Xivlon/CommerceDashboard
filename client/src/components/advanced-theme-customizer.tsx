@@ -133,26 +133,64 @@ export function AdvancedThemeCustomizer() {
           </TabsList>
 
           <TabsContent value="colors" className="space-y-4 mt-4">
-            {Object.entries(customTheme.colors).map(([key, value]) => (
-              <div key={key} className="space-y-2">
-                <Label className="capitalize">{key.replace(/([A-Z])/g, " $1")}</Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="color"
-                    value={value.startsWith("hsl") ? "#000000" : value}
-                    onChange={(e) => updateColor(key as keyof ThemeColors, e.target.value)}
-                    className="w-20 h-10"
-                  />
-                  <Input
-                    type="text"
-                    value={value}
-                    onChange={(e) => updateColor(key as keyof ThemeColors, e.target.value)}
-                    className="flex-1"
-                    placeholder="hsl(0 0% 0%) or #000000"
-                  />
+            {Object.entries(customTheme.colors).map(([key, value]) => {
+              // Convert HSL to hex for color input
+              const getHexFromHsl = (hsl: string): string => {
+                if (!hsl.startsWith("hsl")) return hsl;
+                const match = hsl.match(/\d+(\.\d+)?/g);
+                if (!match || match.length < 3) return "#000000";
+
+                const h = parseFloat(match[0]) / 360;
+                const s = parseFloat(match[1]) / 100;
+                const l = parseFloat(match[2]) / 100;
+
+                const hslToRgb = (h: number, s: number, l: number) => {
+                  let r, g, b;
+                  if (s === 0) {
+                    r = g = b = l;
+                  } else {
+                    const hue2rgb = (p: number, q: number, t: number) => {
+                      if (t < 0) t += 1;
+                      if (t > 1) t -= 1;
+                      if (t < 1/6) return p + (q - p) * 6 * t;
+                      if (t < 1/2) return q;
+                      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                      return p;
+                    };
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+                    r = hue2rgb(p, q, h + 1/3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1/3);
+                  }
+                  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+                };
+
+                const [r, g, b] = hslToRgb(h, s, l);
+                return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+              };
+
+              return (
+                <div key={key} className="space-y-2">
+                  <Label className="capitalize">{key.replace(/([A-Z])/g, " $1")}</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="color"
+                      value={getHexFromHsl(value)}
+                      onChange={(e) => updateColor(key as keyof ThemeColors, e.target.value)}
+                      className="w-20 h-10"
+                    />
+                    <Input
+                      type="text"
+                      value={value}
+                      onChange={(e) => updateColor(key as keyof ThemeColors, e.target.value)}
+                      className="flex-1"
+                      placeholder="hsl(0 0% 0%) or #000000"
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </TabsContent>
 
           <TabsContent value="typography" className="space-y-6 mt-4">

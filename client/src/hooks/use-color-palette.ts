@@ -134,11 +134,6 @@ export function useColorPalette() {
 
   const changePalette = (palette: ColorPalette) => {
     setCurrentPalette(palette);
-    
-    // Refresh the page to ensure all components update with new theme
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
   };
 
   const colors = colorPalettes[currentPalette];

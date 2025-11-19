@@ -12,8 +12,8 @@ export function ColorPaletteSelector() {
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Palette className="h-4 w-4" />
-          <div 
-            className="w-4 h-4 rounded-full border border-gray-300" 
+          <div
+            className="w-4 h-4 rounded-full border border-border"
             style={{ backgroundColor: colors.primary }}
           />
           {paletteNames[currentPalette]}
@@ -50,24 +50,24 @@ export function ColorPaletteSelector() {
                 <button
                   key={palette}
                   onClick={() => changePalette(palette)}
-                  className={`flex items-center justify-between p-3 rounded-lg border transition-colors hover:bg-gray-50 ${
-                    palette === currentPalette 
-                      ? 'border-blue-300 bg-blue-50' 
-                      : 'border-gray-200'
+                  className={`flex items-center justify-between p-3 rounded-lg border transition-colors hover:bg-accent/10 ${
+                    palette === currentPalette
+                      ? 'border-primary/50 bg-primary/10'
+                      : 'border-border'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex gap-1">
-                      <div 
-                        className="w-4 h-4 rounded-full border border-gray-300"
+                      <div
+                        className="w-4 h-4 rounded-full border border-border"
                         style={{ backgroundColor: paletteColors.primary }}
                       />
-                      <div 
-                        className="w-4 h-4 rounded-full border border-gray-300"
+                      <div
+                        className="w-4 h-4 rounded-full border border-border"
                         style={{ backgroundColor: paletteColors.secondary }}
                       />
-                      <div 
-                        className="w-4 h-4 rounded-full border border-gray-300"
+                      <div
+                        className="w-4 h-4 rounded-full border border-border"
                         style={{ backgroundColor: paletteColors.accent }}
                       />
                     </div>
@@ -83,7 +83,7 @@ export function ColorPaletteSelector() {
           </div>
           
           <div className="pt-3 border-t">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Color palette changes apply to all charts and visualizations
             </p>
           </div>
