@@ -22,16 +22,25 @@ async function seedDatabase() {
   console.log("🌱 Starting comprehensive database seeding...");
 
   try {
-    // Clear existing data
+    // Clear existing data (if tables exist)
     console.log("🗑️  Clearing existing data...");
-    await db.delete(productRecommendations);
-    await db.delete(salesMetrics);
-    await db.delete(mlPredictions);
-    await db.delete(orderItems);
-    await db.delete(orders);
-    await db.delete(products);
-    await db.delete(customers);
-    console.log("✓ Existing data cleared");
+    try {
+      await db.delete(productRecommendations);
+      await db.delete(salesMetrics);
+      await db.delete(mlPredictions);
+      await db.delete(orderItems);
+      await db.delete(orders);
+      await db.delete(products);
+      await db.delete(customers);
+      console.log("✓ Existing data cleared");
+    } catch (error: any) {
+      if (error.code === '42P01') {
+        console.log("⚠️  Tables don't exist yet. They will be created on first insert.");
+        console.log("💡 TIP: Run 'npm run db:push' first to create the schema explicitly.");
+      } else {
+        throw error;
+      }
+    }
 
     // Seed 100 customers with diverse profiles
     console.log("\n👥 Seeding 100 customers...");
