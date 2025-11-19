@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { TrendingUp, Users, Eye, Mail, RefreshCw, Download, Zap, AlertTriangle, Target } from "lucide-react";
 import { getCustomersWithPredictions, getCLVPredictions, generateAllPredictions, refreshAllData } from "@/lib/ml-api";
@@ -263,82 +264,94 @@ export function CLVPrediction({ period, detailed = false }: CLVPredictionProps) 
 
           <div className="mt-8">
             <h4 className="font-medium text-foreground mb-4">CLV Insights & Trends</h4>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="p-4 bg-theme-primary/10 rounded-lg border border-theme-primary/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="h-4 w-4 text-theme-primary" />
-                  <h5 className="font-semibold text-foreground">Growth Opportunities</h5>
-                </div>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex justify-between items-center">
-                    <span>High-value customer growth</span>
-                    <span className="font-medium text-theme-primary">+23%</span>
+            <Accordion type="multiple" defaultValue={["growth", "risk", "actions"]} className="space-y-3">
+              <AccordionItem value="growth" className="bg-theme-primary/10 rounded-lg border border-theme-primary/20 px-4">
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-theme-primary" />
+                    <h5 className="font-semibold text-foreground">Growth Opportunities</h5>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Cross-sell revenue potential</span>
-                    <span className="font-medium text-theme-primary">$127K</span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-3 text-sm pt-2">
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">High-value customer growth</span>
+                      <span className="font-semibold text-theme-primary">+23%</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Cross-sell revenue potential</span>
+                      <span className="font-semibold text-theme-primary">$127K</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Premium upgrade candidates</span>
+                      <span className="font-semibold text-theme-primary">45 customers</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Loyalty program CLV impact</span>
+                      <span className="font-semibold text-theme-primary">+32%</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Premium upgrade candidates</span>
-                    <span className="font-medium text-theme-primary">45 customers</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Loyalty program CLV impact</span>
-                    <span className="font-medium text-theme-primary">+32%</span>
-                  </div>
-                </div>
-              </div>
+                </AccordionContent>
+              </AccordionItem>
 
-              <div className="p-4 bg-theme-accent/10 rounded-lg border border-theme-accent/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle className="h-4 w-4 text-theme-accent" />
-                  <h5 className="font-semibold text-foreground">Value at Risk</h5>
-                </div>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex justify-between items-center">
-                    <span>High-value customers at risk</span>
-                    <span className="font-medium text-theme-accent">12 customers</span>
+              <AccordionItem value="risk" className="bg-theme-accent/10 rounded-lg border border-theme-accent/20 px-4">
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-theme-accent" />
+                    <h5 className="font-semibold text-foreground">Value at Risk</h5>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Potential revenue loss</span>
-                    <span className="font-medium text-theme-accent">$89K</span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-3 text-sm pt-2">
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">High-value customers at risk</span>
+                      <span className="font-semibold text-theme-accent">12 customers</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Potential revenue loss</span>
+                      <span className="font-semibold text-theme-accent">$89K</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Seasonal CLV impact</span>
+                      <span className="font-semibold text-theme-accent">-15%</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Price sensitive segment</span>
+                      <span className="font-semibold text-theme-accent">Medium tier</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Seasonal CLV impact</span>
-                    <span className="font-medium text-theme-accent">-15%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Price sensitive segment</span>
-                    <span className="font-medium text-theme-accent">Medium tier</span>
-                  </div>
-                </div>
-              </div>
+                </AccordionContent>
+              </AccordionItem>
 
-              <div className="p-4 bg-theme-success/10 rounded-lg border border-theme-success/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <Target className="h-4 w-4 text-theme-success" />
-                  <h5 className="font-semibold text-foreground">Recommended Actions</h5>
-                </div>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex justify-between items-center">
-                    <span>VIP Program Launch</span>
-                    <span className="font-medium text-theme-success text-xs">Top 10%</span>
+              <AccordionItem value="actions" className="bg-theme-success/10 rounded-lg border border-theme-success/20 px-4">
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-theme-success" />
+                    <h5 className="font-semibold text-foreground">Recommended Actions</h5>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Retention Campaigns</span>
-                    <span className="font-medium text-theme-success text-xs">Personalized</span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-3 text-sm pt-2">
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">VIP Program Launch</span>
+                      <span className="font-semibold text-theme-success">Top 10%</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Retention Campaigns</span>
+                      <span className="font-semibold text-theme-success">Personalized</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Product Bundling</span>
+                      <span className="font-semibold text-theme-success">Medium tier</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 px-3 bg-background/50 rounded">
+                      <span className="text-muted-foreground">Onboarding Optimization</span>
+                      <span className="font-semibold text-theme-success">New growth</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span>Product Bundling</span>
-                    <span className="font-medium text-theme-success text-xs">Medium tier</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Onboarding Optimization</span>
-                    <span className="font-medium text-theme-success text-xs">New growth</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
           {detailed && (
