@@ -115,7 +115,7 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
         <CardContent>
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 bg-gray-200 rounded animate-pulse" />
+              <div key={i} className="h-16 bg-muted rounded animate-pulse" />
             ))}
           </div>
         </CardContent>
@@ -133,7 +133,7 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500">Failed to load recommendations</p>
+          <p className="text-muted-foreground">Failed to load recommendations</p>
         </CardContent>
       </Card>
     );
@@ -197,11 +197,11 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-theme-primary">{crossSellRecommendations.length}</div>
-                <div className="text-sm text-gray-600">Cross-sell Opportunities</div>
+                <div className="text-sm text-muted-foreground">Cross-sell Opportunities</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-theme-success">{upSellRecommendations.length}</div>
-                <div className="text-sm text-gray-600">Up-sell Opportunities</div>
+                <div className="text-sm text-muted-foreground">Up-sell Opportunities</div>
               </div>
             </div>
 
@@ -210,7 +210,7 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
                 <div key={index} className="flex items-center justify-between p-3 bg-theme-neutral/5 rounded-lg border border-theme-neutral/10">
                   <div>
                     <p className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</p>
-                    <p className="text-sm text-gray-600">{rec.recommendationType.replace('_', '-')} opportunity</p>
+                    <p className="text-sm text-muted-foreground">{rec.recommendationType.replace('_', '-')} opportunity</p>
                   </div>
                   <Badge variant={rec.recommendationType === 'cross_sell' ? 'default' : 'secondary'}>
                     {formatPercentage(parseFloat(rec.confidence) * 100)}
@@ -314,11 +314,11 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</h4>
-                          <p className="text-sm text-gray-600">Cross-sell opportunity</p>
+                          <p className="text-sm text-muted-foreground">Cross-sell opportunity</p>
                         </div>
                         <div className="text-right">
                           <Badge variant="default">{formatPercentage(parseFloat(rec.confidence) * 100)}</Badge>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-muted-foreground mt-1">
                             Co-occurrence: {rec.coOccurrenceCount}
                           </p>
                         </div>
@@ -338,11 +338,11 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium">Product {rec.productId} → Product {rec.recommendedProductId}</h4>
-                          <p className="text-sm text-gray-600">Up-sell opportunity</p>
+                          <p className="text-sm text-muted-foreground">Up-sell opportunity</p>
                         </div>
                         <div className="text-right">
                           <Badge variant="secondary">{formatPercentage(parseFloat(rec.confidence) * 100)}</Badge>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-muted-foreground mt-1">
                             Co-occurrence: {rec.coOccurrenceCount}
                           </p>
                         </div>
@@ -415,25 +415,25 @@ export function ProductRecommendations({ category, detailed = false }: ProductRe
                           recommendations.reduce((sum, r) => sum + parseFloat(r.confidence), 0) / recommendations.length * 100
                         )}
                       </div>
-                      <div className="text-sm text-gray-600">Avg Confidence</div>
+                      <div className="text-sm text-muted-foreground">Avg Confidence</div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-green-600">
                         {Math.round(recommendations.reduce((sum, r) => sum + r.coOccurrenceCount, 0) / recommendations.length)}
                       </div>
-                      <div className="text-sm text-gray-600">Avg Co-occurrence</div>
+                      <div className="text-sm text-muted-foreground">Avg Co-occurrence</div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-purple-600">
                         {formatPercentage(recommendations.filter(r => parseFloat(r.confidence) > 0.7).length / recommendations.length * 100)}
                       </div>
-                      <div className="text-sm text-gray-600">High Quality Rate</div>
+                      <div className="text-sm text-muted-foreground">High Quality Rate</div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-amber-600">
                         {recommendations.length > 0 ? Math.max(...recommendations.map(r => r.coOccurrenceCount)) : 0}
                       </div>
-                      <div className="text-sm text-gray-600">Max Co-occurrence</div>
+                      <div className="text-sm text-muted-foreground">Max Co-occurrence</div>
                     </div>
                   </div>
                 </CardContent>
