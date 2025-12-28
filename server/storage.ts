@@ -40,6 +40,7 @@ export interface IStorage {
 
   // Product Recommendation methods
   getProductRecommendations(productId: number, type?: string): Promise<ProductRecommendation[]>;
+  getAllProductRecommendations(type?: string, limit?: number): Promise<ProductRecommendation[]>;
   createProductRecommendation(recommendation: InsertProductRecommendation): Promise<ProductRecommendation>;
 
   // Dashboard methods
@@ -290,6 +291,23 @@ export class DatabaseStorage implements IStorage {
       )).orderBy(desc(sql`CAST(${productRecommendations.confidence} AS FLOAT)`));
     }
     return await db.select().from(productRecommendations).where(eq(productRecommendations.productId, productId)).orderBy(desc(sql`CAST(${productRecommendations.confidence} AS FLOAT)`));
+  }
+
+  // Fixed N+1 query - single query to get all recommendations
+  async getAllProductRecommendations(type?: string, limit = 100): Promise<ProductRecommendation[]> {
+    if (type) {
+      return await db
+        .select()
+        .from(productRecommendations)
+        .where(eq(productRecommendations.recommendationType, type))
+        .orderBy(desc(sql`CAST(${productRecommendations.confidence} AS FLOAT)`))
+        .limit(limit);
+    }
+    return await db
+      .select()
+      .from(productRecommendations)
+      .orderBy(desc(sql`CAST(${productRecommendations.confidence} AS FLOAT)`))
+      .limit(limit);
   }
 
   async createProductRecommendation(recommendation: InsertProductRecommendation): Promise<ProductRecommendation> {

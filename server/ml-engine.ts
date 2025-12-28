@@ -1,30 +1,60 @@
-import { 
-  type Customer, type Order, type OrderItem, 
+import {
+  type Customer, type Order, type OrderItem,
   type InsertMLPrediction, type InsertProductRecommendation,
-  type SalesMetric 
+  type SalesMetric
 } from "@shared/schema";
+
+// Proper type definitions for ML features
+export interface CustomerFeatures {
+  totalSpent: number;
+  orderCount: number;
+  daysSinceRegistration: number;
+  daysSinceLastPurchase: number;
+  avgOrderValue: number;
+}
+
+export interface ChurnFeatures {
+  daysSinceLastPurchase: number;
+  orderFrequency: number;
+  totalSpent: number;
+  avgOrderValue: number;
+  isActive: boolean;
+}
+
+export interface ForecastDataPoint {
+  date: Date;
+  predicted_revenue: number;
+  confidence_lower: number;
+  confidence_upper: number;
+  trend: number;
+  seasonal_factor: number;
+}
+
+export interface ModelAccuracy {
+  clv: number;
+  churn: number;
+  forecast: number;
+  recommendations: number;
+}
 
 export interface MLEngine {
   generateCLVPrediction(customer: Customer): Promise<InsertMLPrediction>;
   analyzeChurnRisk(customers: Customer[]): Promise<InsertMLPrediction[]>;
-  generateSalesForecast(historicalData: SalesMetric[], days: number): Promise<any[]>;
+  generateSalesForecast(historicalData: SalesMetric[], days: number): Promise<ForecastDataPoint[]>;
   generateProductRecommendations(orders: Order[], orderItems: OrderItem[]): Promise<InsertProductRecommendation[]>;
   retrainModel(modelType: string): Promise<{ success: boolean; accuracy: number; timestamp: Date }>;
 }
 
 class MLEngineImpl implements MLEngine {
-  
+
   async generateCLVPrediction(customer: Customer): Promise<InsertMLPrediction> {
-    // Simulate ML model for CLV prediction
-    // In real implementation, this would use scikit-learn or similar
-    
-    const features = {
+    const features: CustomerFeatures = {
       totalSpent: parseFloat(customer.totalSpent),
       orderCount: customer.orderCount,
       daysSinceRegistration: Math.floor(
         (Date.now() - new Date(customer.registrationDate).getTime()) / (1000 * 60 * 60 * 24)
       ),
-      daysSinceLastPurchase: customer.lastPurchaseDate 
+      daysSinceLastPurchase: customer.lastPurchaseDate
         ? Math.floor((Date.now() - new Date(customer.lastPurchaseDate).getTime()) / (1000 * 60 * 60 * 24))
         : 365,
       avgOrderValue: customer.orderCount > 0 ? parseFloat(customer.totalSpent) / customer.orderCount : 0,
@@ -34,9 +64,9 @@ class MLEngineImpl implements MLEngine {
     const avgOrderValue = features.avgOrderValue;
     const purchaseFrequency = customer.orderCount / Math.max(features.daysSinceRegistration / 365, 1);
     const customerLifespan = this.estimateCustomerLifespan(features);
-    
+
     const predictedCLV = avgOrderValue * purchaseFrequency * customerLifespan;
-    
+
     // Calculate confidence based on data quality
     const confidence = this.calculateCLVConfidence(features);
 
@@ -45,19 +75,19 @@ class MLEngineImpl implements MLEngine {
       predictionType: 'clv',
       predictedValue: predictedCLV.toFixed(2),
       confidence: confidence.toFixed(4),
-      features,
+      features: features as unknown as Record<string, unknown>,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     };
   }
 
   async analyzeChurnRisk(customers: Customer[]): Promise<InsertMLPrediction[]> {
     return Promise.all(customers.map(async (customer) => {
-      const features = {
-        daysSinceLastPurchase: customer.lastPurchaseDate 
+      const features: ChurnFeatures = {
+        daysSinceLastPurchase: customer.lastPurchaseDate
           ? Math.floor((Date.now() - new Date(customer.lastPurchaseDate).getTime()) / (1000 * 60 * 60 * 24))
           : 365,
         orderFrequency: customer.orderCount / Math.max(
-          Math.floor((Date.now() - new Date(customer.registrationDate).getTime()) / (1000 * 60 * 60 * 24)) / 365, 
+          Math.floor((Date.now() - new Date(customer.registrationDate).getTime()) / (1000 * 60 * 60 * 24)) / 365,
           1
         ),
         totalSpent: parseFloat(customer.totalSpent),
@@ -67,20 +97,20 @@ class MLEngineImpl implements MLEngine {
 
       // Simple churn risk calculation
       let churnScore = 0;
-      
+
       // Days since last purchase factor
       if (features.daysSinceLastPurchase > 90) churnScore += 0.4;
       else if (features.daysSinceLastPurchase > 60) churnScore += 0.2;
       else if (features.daysSinceLastPurchase > 30) churnScore += 0.1;
-      
+
       // Order frequency factor
       if (features.orderFrequency < 2) churnScore += 0.3;
       else if (features.orderFrequency < 4) churnScore += 0.1;
-      
+
       // Spending pattern factor
       if (features.totalSpent < 100) churnScore += 0.2;
       else if (features.totalSpent > 1000) churnScore -= 0.1;
-      
+
       // Activity factor
       if (!features.isActive) churnScore += 0.1;
 
@@ -93,55 +123,59 @@ class MLEngineImpl implements MLEngine {
         predictionType: 'churn',
         predictedValue: churnRisk.toFixed(4),
         confidence: confidence.toFixed(4),
-        features,
+        features: features as unknown as Record<string, unknown>,
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       };
     }));
   }
 
-  async generateSalesForecast(historicalData: SalesMetric[], days: number): Promise<any[]> {
+  async generateSalesForecast(historicalData: SalesMetric[], days: number): Promise<ForecastDataPoint[]> {
     if (historicalData.length < 7) {
       // Generate sample historical data for demonstration
       const sampleData = this.generateSampleSalesData(30);
       return this.calculateForecast(sampleData, days);
     }
-    
+
     return this.calculateForecast(historicalData, days);
   }
 
-  private calculateForecast(historicalData: SalesMetric[], days: number): any[] {
+  private calculateForecast(historicalData: SalesMetric[], days: number): ForecastDataPoint[] {
     // Simple time series forecasting
-    const sortedData = historicalData.sort((a, b) => 
+    const sortedData = [...historicalData].sort((a, b) =>
       new Date(a.date).getTime() - new Date(b.date).getTime()
     );
 
     // Calculate trends
     const revenues = sortedData.map(d => parseFloat(d.revenue));
-    const avgRevenue = revenues.reduce((sum, rev) => sum + rev, 0) / revenues.length;
-    
+    const avgRevenue = revenues.length > 0
+      ? revenues.reduce((sum, rev) => sum + rev, 0) / revenues.length
+      : 0;
+
     // Simple linear trend calculation
-    const trend = revenues.length > 1 
+    const trend = revenues.length > 1
       ? (revenues[revenues.length - 1] - revenues[0]) / revenues.length
       : 0;
 
     // Generate forecast
-    const forecast = [];
-    const lastDate = new Date(sortedData[sortedData.length - 1]?.date || Date.now());
-    
+    const forecast: ForecastDataPoint[] = [];
+    const lastDate = sortedData.length > 0
+      ? new Date(sortedData[sortedData.length - 1].date)
+      : new Date();
+
     for (let i = 1; i <= days; i++) {
       const forecastDate = new Date(lastDate.getTime() + i * 24 * 60 * 60 * 1000);
-      
+
       // Add seasonality (simple weekly pattern)
       const dayOfWeek = forecastDate.getDay();
       const seasonalFactor = dayOfWeek === 0 || dayOfWeek === 6 ? 0.8 : 1.1; // Lower on weekends
-      
+
       const baseForecast = avgRevenue + (trend * i);
       const seasonalForecast = baseForecast * seasonalFactor;
-      
+
       // Add some random variation
       const variance = seasonalForecast * 0.1;
       const forecast_value = seasonalForecast + (Math.random() - 0.5) * variance;
-      
+
       forecast.push({
         date: forecastDate,
         predicted_revenue: Math.max(forecast_value, 0),
@@ -163,26 +197,23 @@ class MLEngineImpl implements MLEngine {
     // Group order items by order
     const orderItemsByOrder = new Map<number, OrderItem[]>();
     orderItems.forEach(item => {
-      if (!orderItemsByOrder.has(item.orderId)) {
-        orderItemsByOrder.set(item.orderId, []);
-      }
-      orderItemsByOrder.get(item.orderId)!.push(item);
+      const items = orderItemsByOrder.get(item.orderId) ?? [];
+      items.push(item);
+      orderItemsByOrder.set(item.orderId, items);
     });
 
     // Count co-occurrences
     orderItemsByOrder.forEach(items => {
       items.forEach(item1 => {
         // Count individual product frequency
-        productCounts.set(item1.productId, (productCounts.get(item1.productId) || 0) + 1);
-        
+        productCounts.set(item1.productId, (productCounts.get(item1.productId) ?? 0) + 1);
+
         items.forEach(item2 => {
           if (item1.productId !== item2.productId) {
             const key = `${item1.productId}-${item2.productId}`;
-            if (!productCoOccurrence.has(key)) {
-              productCoOccurrence.set(key, new Map());
-            }
-            const coOccMap = productCoOccurrence.get(key)!;
-            coOccMap.set(item2.productId, (coOccMap.get(item2.productId) || 0) + 1);
+            const coOccMap = productCoOccurrence.get(key) ?? new Map<number, number>();
+            coOccMap.set(item2.productId, (coOccMap.get(item2.productId) ?? 0) + 1);
+            productCoOccurrence.set(key, coOccMap);
           }
         });
       });
@@ -193,12 +224,13 @@ class MLEngineImpl implements MLEngine {
 
     // Generate recommendations based on co-occurrence
     productCoOccurrence.forEach((coOccMap, key) => {
-      const [productId1, productId2] = key.split('-').map(Number);
-      
+      const [productId1Str] = key.split('-');
+      const productId1 = Number(productId1Str);
+
       coOccMap.forEach((count, recommendedProductId) => {
         const support = count / totalOrders;
-        const confidence = count / (productCounts.get(productId1) || 1);
-        const lift = confidence / ((productCounts.get(recommendedProductId) || 1) / totalOrders);
+        const confidence = count / (productCounts.get(productId1) ?? 1);
+        const lift = confidence / ((productCounts.get(recommendedProductId) ?? 1) / totalOrders);
 
         if (confidence > 0.1 && support > 0.05) { // Minimum thresholds
           recommendations.push({
@@ -223,62 +255,66 @@ class MLEngineImpl implements MLEngine {
   async retrainModel(modelType: string): Promise<{ success: boolean; accuracy: number; timestamp: Date }> {
     // Simulate model retraining
     await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate training time
-    
-    const accuracies = {
-      'clv': 0.87 + Math.random() * 0.08, // 87-95%
-      'churn': 0.82 + Math.random() * 0.10, // 82-92%
-      'forecast': 0.91 + Math.random() * 0.05, // 91-96%
-      'recommendations': 0.79 + Math.random() * 0.12, // 79-91%
+
+    const accuracies: ModelAccuracy = {
+      clv: 0.87 + Math.random() * 0.08, // 87-95%
+      churn: 0.82 + Math.random() * 0.10, // 82-92%
+      forecast: 0.91 + Math.random() * 0.05, // 91-96%
+      recommendations: 0.79 + Math.random() * 0.12, // 79-91%
     };
+
+    const accuracy = modelType === 'all'
+      ? (accuracies.clv + accuracies.churn + accuracies.forecast + accuracies.recommendations) / 4
+      : accuracies[modelType as keyof ModelAccuracy] ?? 0.85;
 
     return {
       success: true,
-      accuracy: accuracies[modelType as keyof typeof accuracies] || 0.85,
+      accuracy,
       timestamp: new Date(),
     };
   }
 
-  private estimateCustomerLifespan(features: any): number {
+  private estimateCustomerLifespan(features: CustomerFeatures): number {
     // Simple customer lifespan estimation based on behavior
     let lifespan = 2; // Base 2 years
-    
+
     if (features.avgOrderValue > 100) lifespan += 1;
     if (features.daysSinceLastPurchase < 30) lifespan += 0.5;
     if (features.orderCount > 10) lifespan += 1;
-    
+
     return Math.min(lifespan, 5); // Cap at 5 years
   }
 
-  private calculateCLVConfidence(features: any): number {
+  private calculateCLVConfidence(features: CustomerFeatures): number {
     let confidence = 0.7; // Base confidence
-    
+
     // More orders = higher confidence
     if (features.orderCount > 5) confidence += 0.1;
     if (features.orderCount > 10) confidence += 0.1;
-    
+
     // Recent activity = higher confidence
     if (features.daysSinceLastPurchase < 30) confidence += 0.1;
-    
+
     // Longer history = higher confidence
     if (features.daysSinceRegistration > 365) confidence += 0.05;
-    
+
     return Math.min(confidence, 0.95);
   }
 
   private generateSampleSalesData(days: number): SalesMetric[] {
     const data: SalesMetric[] = [];
     const baseRevenue = 40000;
-    
+
     for (let i = 0; i < days; i++) {
       const date = new Date(Date.now() - (days - i) * 24 * 60 * 60 * 1000);
       const dayOfWeek = date.getDay();
       const seasonalFactor = dayOfWeek === 0 || dayOfWeek === 6 ? 0.7 : 1.2;
       const randomFactor = 0.8 + Math.random() * 0.4;
-      
+
       const revenue = baseRevenue * seasonalFactor * randomFactor;
       const orderCount = Math.floor(revenue / 150); // Avg order $150
       const customerCount = Math.floor(orderCount * 0.8); // Some repeat customers
-      
+
       data.push({
         id: i + 1,
         date,
@@ -289,7 +325,7 @@ class MLEngineImpl implements MLEngine {
         conversionRate: (0.02 + Math.random() * 0.03).toFixed(4), // 2-5%
       });
     }
-    
+
     return data;
   }
 }

@@ -1,13 +1,50 @@
 import { apiRequest } from "./queryClient";
-import type { 
-  CustomerWithPredictions, 
-  MLPrediction, 
+import type {
+  CustomerWithPredictions,
+  MLPrediction,
   ProductRecommendation,
-  ProductWithRecommendations,
   DashboardMetrics,
   MLInsight,
   SalesMetric
 } from "@shared/schema";
+
+// Proper forecast types (matching server-side types)
+export interface ForecastDataPoint {
+  date: string | Date;
+  predicted_revenue: number;
+  confidence_lower: number;
+  confidence_upper: number;
+  trend: number;
+  seasonal_factor: number;
+}
+
+export interface SalesForecastResponse {
+  forecastPeriod: {
+    startDate: Date;
+    endDate: Date;
+    days: number;
+  };
+  historical: SalesMetric[];
+  forecast: ForecastDataPoint[];
+  confidence: number;
+  modelMetrics: {
+    rmse: number;
+    mape: number;
+    r2: number;
+  };
+}
+
+export interface PredictionResult {
+  clv: MLPrediction[];
+  churn: MLPrediction[];
+  recommendations: ProductRecommendation[];
+}
+
+export interface RefreshDataResult {
+  metrics: DashboardMetrics;
+  insights: MLInsight[];
+  customers: CustomerWithPredictions[];
+}
 
 // Customer and CLV API functions
 export async function getCustomersWithPredictions(limit = 50, offset = 0): Promise<CustomerWithPredictions[]> {
@@ -16,7 +53,7 @@ export async function getCustomersWithPredictions(limit = 50, offset = 0): Promi
 }
 
 export async function getCLVPredictions(customerId?: number): Promise<MLPrediction[]> {
-  const url = customerId 
+  const url = customerId
     ? `/api/predictions/clv?customerId=${customerId}`
     : `/api/predictions/clv`;
   const response = await apiRequest("GET", url);
@@ -30,7 +67,7 @@ export async function generateCLVPrediction(customerId: number): Promise<MLPredi
 
 // Churn prediction API functions
 export async function getChurnPredictions(customerId?: number): Promise<MLPrediction[]> {
-  const url = customerId 
+  const url = customerId
     ? `/api/predictions/churn?customerId=${customerId}`
     : `/api/predictions/churn`;
   const response = await apiRequest("GET", url);
@@ -42,18 +79,8 @@ export async function analyzeChurnRisk(): Promise<MLPrediction[]> {
   return response.json();
 }
 
-// Sales forecasting API functions
-export async function getSalesForecast(days = 30): Promise<{
-  forecastPeriod: { startDate: Date; endDate: Date; days: number };
-  historical: SalesMetric[];
-  forecast: any[];
-  confidence: number;
-  modelMetrics: {
-    rmse: number;
-    mape: number;
-    r2: number;
-  };
-}> {
+// Sales forecasting API functions with proper types
+export async function getSalesForecast(days = 30): Promise<SalesForecastResponse> {
   const response = await apiRequest("GET", `/api/forecast/sales?days=${days}`);
   return response.json();
 }
@@ -61,18 +88,18 @@ export async function getSalesForecast(days = 30): Promise<{
 export async function getSalesMetrics(startDate?: Date, endDate?: Date): Promise<SalesMetric[]> {
   let url = "/api/sales-metrics";
   const params = new URLSearchParams();
-  
+
   if (startDate) {
     params.append("startDate", startDate.toISOString());
   }
   if (endDate) {
     params.append("endDate", endDate.toISOString());
   }
-  
+
   if (params.toString()) {
     url += `?${params.toString()}`;
   }
-  
+
   const response = await apiRequest("GET", url);
   return response.json();
 }
@@ -81,18 +108,18 @@ export async function getSalesMetrics(startDate?: Date, endDate?: Date): Promise
 export async function getProductRecommendations(productId?: number, type?: string): Promise<ProductRecommendation[]> {
   let url = "/api/recommendations/products";
   const params = new URLSearchParams();
-  
+
   if (productId) {
     params.append("productId", productId.toString());
   }
   if (type) {
     params.append("type", type);
   }
-  
+
   if (params.toString()) {
     url += `?${params.toString()}`;
   }
-  
+
   const response = await apiRequest("GET", url);
   return response.json();
 }
@@ -144,38 +171,73 @@ export function formatPercentage(value: number, decimals = 1): string {
   return `${value.toFixed(decimals)}%`;
 }
 
-export function formatConfidence(confidence: number): string {
-  return `${(confidence * 100).toFixed(0)}%`;
+export function formatConfidence(confidence: number | string): string {
+  const numValue = typeof confidence === 'string' ? parseFloat(confidence) : confidence;
+  return `${(numValue * 100).toFixed(0)}%`;
 }
 
-// Data validation functions
-export function isValidCLVPrediction(prediction: MLPrediction): boolean {
+// Safe number parsing utilities
+export function safeParseFloat(value: unknown, fallback = 0): number {
+  if (value === null || value === undefined) return fallback;
+  const parsed = typeof value === 'string' ? parseFloat(value) : Number(value);
+  return isNaN(parsed) ? fallback : parsed;
+}
+
+export function safeParseInt(value: unknown, fallback = 0): number {
+  if (value === null || value === undefined) return fallback;
+  const parsed = typeof value === 'string' ? parseInt(value, 10) : Number(value);
+  return isNaN(parsed) ? fallback : parsed;
+}
+
+// Data validation functions with proper null checks
+export function isValidCLVPrediction(prediction: MLPrediction | null | undefined): boolean {
+  if (!prediction) return false;
+  const confidence = prediction.confidence;
+  if (confidence === null || confidence === undefined) return false;
+
+  const confidenceNum = safeParseFloat(confidence);
+
   return (
     prediction.predictionType === 'clv' &&
     prediction.predictedValue !== null &&
-    prediction.confidence !== null &&
-    parseFloat(prediction.confidence) >= 0 &&
-    parseFloat(prediction.confidence) <= 1
+    confidenceNum >= 0 &&
+    confidenceNum <= 1
   );
 }
 
-export function isValidChurnPrediction(prediction: MLPrediction): boolean {
+export function isValidChurnPrediction(prediction: MLPrediction | null | undefined): boolean {
+  if (!prediction) return false;
+  const predictedValue = prediction.predictedValue;
+  const confidence = prediction.confidence;
+
+  if (predictedValue === null || predictedValue === undefined) return false;
+  if (confidence === null || confidence === undefined) return false;
+
+  const predictedNum = safeParseFloat(predictedValue);
+  const confidenceNum = safeParseFloat(confidence);
+
   return (
     prediction.predictionType === 'churn' &&
-    prediction.predictedValue !== null &&
-    prediction.confidence !== null &&
-    parseFloat(prediction.predictedValue) >= 0 &&
-    parseFloat(prediction.predictedValue) <= 1
+    predictedNum >= 0 &&
+    predictedNum <= 1 &&
+    confidenceNum >= 0 &&
+    confidenceNum <= 1
   );
 }
 
-export function isValidRecommendation(recommendation: ProductRecommendation): boolean {
+export function isValidRecommendation(recommendation: ProductRecommendation | null | undefined): boolean {
+  if (!recommendation) return false;
+  const confidence = recommendation.confidence;
+  if (!confidence) return false;
+
+  const confidenceNum = safeParseFloat(confidence);
+
   return (
     recommendation.productId > 0 &&
     recommendation.recommendedProductId > 0 &&
     recommendation.productId !== recommendation.recommendedProductId &&
-    parseFloat(recommendation.confidence) >= 0 &&
-    parseFloat(recommendation.confidence) <= 1
+    confidenceNum >= 0 &&
+    confidenceNum <= 1
   );
 }
 
@@ -192,47 +254,29 @@ export async function withErrorHandling<T>(
   }
 }
 
-// Batch operations
-export async function generateAllPredictions(): Promise<{
-  clv: MLPrediction[];
-  churn: MLPrediction[];
-  recommendations: ProductRecommendation[];
-}> {
-  try {
-    const [churnPredictions, recommendations] = await Promise.all([
-      analyzeChurnRisk(),
-      generateProductRecommendations()
-    ]);
+// Batch operations with proper typing
+export async function generateAllPredictions(): Promise<PredictionResult> {
+  const [churnPredictions, recommendations] = await Promise.all([
+    analyzeChurnRisk(),
+    generateProductRecommendations()
+  ]);
 
-    // CLV predictions are generated per customer, so we'll get existing ones
-    const clvPredictions = await getCLVPredictions();
+  // CLV predictions are generated per customer, so we'll get existing ones
+  const clvPredictions = await getCLVPredictions();
 
-    return {
-      clv: clvPredictions,
-      churn: churnPredictions,
-      recommendations
-    };
-  } catch (error) {
-    console.error('Failed to generate all predictions:', error);
-    throw error;
-  }
+  return {
+    clv: clvPredictions,
+    churn: churnPredictions,
+    recommendations
+  };
 }
 
-export async function refreshAllData(): Promise<{
-  metrics: DashboardMetrics;
-  insights: MLInsight[];
-  customers: CustomerWithPredictions[];
-}> {
-  try {
-    const [metrics, insights, customers] = await Promise.all([
-      getDashboardMetrics(),
-      getMLInsights(),
-      getCustomersWithPredictions(100, 0)
-    ]);
+export async function refreshAllData(): Promise<RefreshDataResult> {
+  const [metrics, insights, customers] = await Promise.all([
+    getDashboardMetrics(),
+    getMLInsights(),
+    getCustomersWithPredictions(100, 0)
+  ]);
 
-    return { metrics, insights, customers };
-  } catch (error) {
-    console.error('Failed to refresh all data:', error);
-    throw error;
-  }
+  return { metrics, insights, customers };
 }

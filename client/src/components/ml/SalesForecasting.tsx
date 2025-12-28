@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { TrendingUp, BarChart3, Target, Calendar } from "lucide-react";
-import { getSalesForecast, getSalesMetrics } from "@/lib/ml-api";
-import { useState } from "react";
+import { getSalesForecast, getSalesMetrics, type ForecastDataPoint, safeParseFloat } from "@/lib/ml-api";
+import { useState, useMemo } from "react";
 import { useColorPalette } from "@/hooks/use-color-palette";
 
 interface SalesForecastingProps {
@@ -64,26 +64,34 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
     );
   }
 
-  // Combine historical and forecast data for visualization
-  const combinedData = [
+  // Combine historical and forecast data for visualization - memoized for performance
+  const combinedData = useMemo(() => [
     ...salesMetrics.slice(-30).map(metric => ({
       date: new Date(metric.date).toLocaleDateString(),
-      actual: parseFloat(metric.revenue),
-      predicted: null,
-      type: 'historical'
+      actual: safeParseFloat(metric.revenue),
+      predicted: null as number | null,
+      type: 'historical' as const
     })),
-    ...forecastData.forecast.map((forecast: any) => ({
+    ...forecastData.forecast.map((forecast: ForecastDataPoint) => ({
       date: new Date(forecast.date).toLocaleDateString(),
-      actual: null,
+      actual: null as number | null,
       predicted: forecast.predicted_revenue,
       confidence_lower: forecast.confidence_lower,
       confidence_upper: forecast.confidence_upper,
-      type: 'forecast'
+      type: 'forecast' as const
     }))
-  ];
+  ], [salesMetrics, forecastData.forecast]);
 
-  const totalPredictedRevenue = forecastData.forecast.reduce((sum: number, f: any) => sum + f.predicted_revenue, 0);
-  const avgDailyRevenue = salesMetrics.slice(-30).reduce((sum, metric) => sum + parseFloat(metric.revenue), 0) / 30;
+  const totalPredictedRevenue = useMemo(() =>
+    forecastData.forecast.reduce((sum: number, f: ForecastDataPoint) => sum + f.predicted_revenue, 0),
+    [forecastData.forecast]
+  );
+
+  const avgDailyRevenue = useMemo(() =>
+    salesMetrics.slice(-30).reduce((sum, metric) => sum + safeParseFloat(metric.revenue), 0) / 30,
+    [salesMetrics]
+  );
+
   const growthRate = ((totalPredictedRevenue / parseInt(forecastDays) - avgDailyRevenue) / avgDailyRevenue) * 100;
 
   const seasonalFactors = [

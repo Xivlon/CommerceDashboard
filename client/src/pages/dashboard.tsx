@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +13,12 @@ import { ProductRecommendations } from "@/components/ml/ProductRecommendations";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
 import { DomainSelector } from "@/components/ui/domain-selector";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { getDashboardMetrics, getMLInsights, retrainModels } from "@/lib/ml-api";
 import { useToast } from "@/hooks/use-toast";
 import { usePreferences } from "@/components/preferences-provider";
 import { useDomain } from "@/contexts/domain-context";
 import { REFRESH_INTERVALS } from "@/lib/preferences";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
@@ -70,16 +70,29 @@ export default function Dashboard() {
 
   if (metricsLoading || insightsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6" role="main" aria-busy="true" aria-label="Loading dashboard">
         <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse space-y-8">
-            <div className="h-20 bg-card rounded-xl"></div>
+          <div className="space-y-8">
+            {/* Header skeleton */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center">
+              <div className="space-y-2">
+                <Skeleton className="h-9 w-64" />
+                <Skeleton className="h-5 w-96" />
+              </div>
+              <div className="flex gap-3 mt-4 lg:mt-0">
+                <Skeleton className="h-10 w-32" />
+                <Skeleton className="h-10 w-10" />
+                <Skeleton className="h-10 w-40" />
+              </div>
+            </div>
+            {/* KPI cards skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-32 bg-card rounded-xl"></div>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-32 rounded-xl" />
               ))}
             </div>
-            <div className="h-96 bg-card rounded-xl"></div>
+            {/* Main content skeleton */}
+            <Skeleton className="h-96 rounded-xl" />
           </div>
         </div>
       </div>
@@ -87,10 +100,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-theme-primary/5 p-6" role="main">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
+        <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
               {getTerminology('dashboardTitle')}
@@ -99,18 +112,18 @@ export default function Dashboard() {
               {domainConfig.description}
             </p>
           </div>
-          
-          <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
+
+          <nav className="flex flex-wrap gap-3 mt-4 lg:mt-0" aria-label="Dashboard controls">
             <DomainSelector />
             <Link href="/data-sources">
-              <Button variant="outline">
-                <Database className="h-4 w-4 mr-2" />
+              <Button variant="outline" aria-label="Configure custom data sources">
+                <Database className="h-4 w-4 mr-2" aria-hidden="true" />
                 Custom Data
               </Button>
             </Link>
             <Link href="/settings">
-              <Button variant="outline" size="icon">
-                <Settings className="h-4 w-4" />
+              <Button variant="outline" size="icon" aria-label="Open settings">
+                <Settings className="h-4 w-4" aria-hidden="true" />
               </Button>
             </Link>
             <ThemeToggle />
@@ -139,24 +152,27 @@ export default function Dashboard() {
             
             <ColorPaletteSelector />
             
-            <Button 
+            <Button
               onClick={handleRefresh}
               disabled={isRefreshing}
               className="bg-theme-primary hover:bg-theme-primary/80"
+              aria-label={isRefreshing ? "Refreshing ML models" : "Refresh ML models"}
+              aria-busy={isRefreshing}
             >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
               Refresh ML Models
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={handleExport}
               className="bg-theme-success hover:bg-theme-success/80"
+              aria-label="Export dashboard report"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-4 h-4 mr-2" aria-hidden="true" />
               Export Report
             </Button>
-          </div>
-        </div>
+          </nav>
+        </header>
 
         {/* KPI Cards */}
         <MLKPICards metrics={dashboardMetrics} />
