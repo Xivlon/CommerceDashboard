@@ -220,17 +220,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         forecast.push({
           date: forecastDate,
-          predicted_revenue: predicted,
-          confidence_lower: predicted * 0.85,
-          confidence_upper: predicted * 1.15,
+          predictedRevenue: predicted,
+          confidenceLower: predicted * 0.85,
+          confidenceUpper: predicted * 1.15,
           trend: 0.02,
-          seasonal_factor: seasonalFactor,
+          seasonalFactor: seasonalFactor,
         });
       }
 
       return res.json({
         forecastPeriod: { startDate: now, endDate: new Date(now.getTime() + days * 24 * 60 * 60 * 1000), days },
-        historical: historicalMetrics,
+        historical: transformArray(historicalMetrics as Record<string, unknown>[]),
         forecast,
         confidence: 0.94,
         modelMetrics: { rmse: 12300, mape: 8.7, r2: 0.89 },

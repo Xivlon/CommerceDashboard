@@ -11,11 +11,11 @@ import type {
 // Proper forecast types (matching server-side types)
 export interface ForecastDataPoint {
   date: string | Date;
-  predicted_revenue: number;
-  confidence_lower: number;
-  confidence_upper: number;
+  predictedRevenue: number;
+  confidenceLower: number;
+  confidenceUpper: number;
   trend: number;
-  seasonal_factor: number;
+  seasonalFactor: number;
 }
 
 export interface SalesForecastResponse {

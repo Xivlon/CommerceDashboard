@@ -75,15 +75,15 @@ export function SalesForecasting({ period, detailed = false }: SalesForecastingP
     ...forecastData.forecast.map((forecast: ForecastDataPoint) => ({
       date: new Date(forecast.date).toLocaleDateString(),
       actual: null as number | null,
-      predicted: forecast.predicted_revenue,
-      confidence_lower: forecast.confidence_lower,
-      confidence_upper: forecast.confidence_upper,
+      predicted: forecast.predictedRevenue,
+      confidenceLower: forecast.confidenceLower,
+      confidenceUpper: forecast.confidenceUpper,
       type: 'forecast' as const
     }))
   ], [salesMetrics, forecastData.forecast]);
 
   const totalPredictedRevenue = useMemo(() =>
-    forecastData.forecast.reduce((sum: number, f: ForecastDataPoint) => sum + f.predicted_revenue, 0),
+    forecastData.forecast.reduce((sum: number, f: ForecastDataPoint) => sum + f.predictedRevenue, 0),
     [forecastData.forecast]
   );
 
