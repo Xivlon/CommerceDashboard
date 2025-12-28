@@ -22,6 +22,25 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
+// Convert snake_case to camelCase
+function snakeToCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+// Transform object keys from snake_case to camelCase
+function transformKeys<T>(obj: Record<string, unknown>): T {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[snakeToCamel(key)] = value;
+  }
+  return result as T;
+}
+
+// Transform array of objects
+function transformArray<T>(arr: Record<string, unknown>[]): T[] {
+  return arr.map(item => transformKeys<T>(item));
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -54,20 +73,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (withPredictions) {
         const customers = await db`
           SELECT c.*,
-            (SELECT json_build_object('id', p.id, 'predicted_value', p.predicted_value, 'confidence', p.confidence)
+            (SELECT json_build_object('id', p.id, 'predictedValue', p.predicted_value, 'confidence', p.confidence)
              FROM ml_predictions p WHERE p.customer_id = c.id AND p.prediction_type = 'clv'
              ORDER BY p.created_at DESC LIMIT 1) as clv_prediction,
-            (SELECT json_build_object('id', p.id, 'predicted_value', p.predicted_value, 'confidence', p.confidence)
+            (SELECT json_build_object('id', p.id, 'predictedValue', p.predicted_value, 'confidence', p.confidence)
              FROM ml_predictions p WHERE p.customer_id = c.id AND p.prediction_type = 'churn'
              ORDER BY p.created_at DESC LIMIT 1) as churn_prediction
           FROM customers c
           LIMIT ${limit} OFFSET ${offset}
         `;
-        return res.json(customers);
+        return res.json(transformArray(customers as Record<string, unknown>[]));
       }
 
       const customers = await db`SELECT * FROM customers LIMIT ${limit} OFFSET ${offset}`;
-      return res.json(customers);
+      return res.json(transformArray(customers as Record<string, unknown>[]));
     }
 
     // Route: GET /api/dashboard/metrics
@@ -153,11 +172,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           WHERE customer_id = ${customerId} AND prediction_type = 'clv'
           ORDER BY created_at DESC LIMIT 1
         `;
-        return res.json(prediction || null);
+        return res.json(prediction ? transformKeys(prediction as Record<string, unknown>) : null);
       }
 
       const predictions = await db`SELECT * FROM ml_predictions WHERE prediction_type = 'clv'`;
-      return res.json(predictions);
+      return res.json(transformArray(predictions as Record<string, unknown>[]));
     }
 
     // Route: GET /api/predictions/churn
@@ -170,17 +189,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           WHERE customer_id = ${customerId} AND prediction_type = 'churn'
           ORDER BY created_at DESC LIMIT 1
         `;
-        return res.json(prediction || null);
+        return res.json(prediction ? transformKeys(prediction as Record<string, unknown>) : null);
       }
 
       const predictions = await db`SELECT * FROM ml_predictions WHERE prediction_type = 'churn'`;
-      return res.json(predictions);
+      return res.json(transformArray(predictions as Record<string, unknown>[]));
     }
 
     // Route: GET /api/sales-metrics
     if (path === '/api/sales-metrics' && method === 'GET') {
       const metrics = await db`SELECT * FROM sales_metrics ORDER BY date`;
-      return res.json(metrics);
+      return res.json(transformArray(metrics as Record<string, unknown>[]));
     }
 
     // Route: GET /api/forecast/sales
@@ -227,13 +246,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const recommendations = type
           ? await db`SELECT * FROM product_recommendations WHERE product_id = ${productId} AND recommendation_type = ${type}`
           : await db`SELECT * FROM product_recommendations WHERE product_id = ${productId}`;
-        return res.json(recommendations);
+        return res.json(transformArray(recommendations as Record<string, unknown>[]));
       }
 
       const recommendations = type
         ? await db`SELECT * FROM product_recommendations WHERE recommendation_type = ${type} LIMIT 100`
         : await db`SELECT * FROM product_recommendations LIMIT 100`;
-      return res.json(recommendations);
+      return res.json(transformArray(recommendations as Record<string, unknown>[]));
     }
 
     // 404 for unmatched routes
