@@ -1,8 +1,19 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { neon } from '@neondatabase/serverless';
+import { neon, NeonQueryFunction } from '@neondatabase/serverless';
 
-// Initialize database connection
-const sql = neon(process.env.DATABASE_URL!);
+// Lazy database initialization
+let sql: NeonQueryFunction<false, false> | null = null;
+
+function getDb() {
+  if (!sql) {
+    const dbUrl = process.env.DATABASE_URL;
+    if (!dbUrl) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    sql = neon(dbUrl);
+  }
+  return sql;
+}
 
 // CORS headers
 const corsHeaders = {
@@ -26,6 +37,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const path = url?.split('?')[0] || '';
 
   try {
+    // Health check endpoint (no database required)
+    if (path === '/api/health' && method === 'GET') {
+      return res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    }
+
+    // Get database connection (lazy init)
+    const db = getDb();
+
     // Route: GET /api/customers
     if (path === '/api/customers' && method === 'GET') {
       const limit = parseInt(req.query.limit as string) || 50;
@@ -33,7 +52,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const withPredictions = req.query.predictions === 'true';
 
       if (withPredictions) {
-        const customers = await sql`
+        const customers = await db`
           SELECT c.*,
             (SELECT json_build_object('id', p.id, 'predicted_value', p.predicted_value, 'confidence', p.confidence)
              FROM ml_predictions p WHERE p.customer_id = c.id AND p.prediction_type = 'clv'
@@ -47,15 +66,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.json(customers);
       }
 
-      const customers = await sql`SELECT * FROM customers LIMIT ${limit} OFFSET ${offset}`;
+      const customers = await db`SELECT * FROM customers LIMIT ${limit} OFFSET ${offset}`;
       return res.json(customers);
     }
 
     // Route: GET /api/dashboard/metrics
     if (path === '/api/dashboard/metrics' && method === 'GET') {
-      const [totalCustomers] = await sql`SELECT COUNT(*) as count FROM customers`;
-      const [totalOrders] = await sql`SELECT COUNT(*) as count FROM orders`;
-      const [revenueResult] = await sql`SELECT COALESCE(SUM(CAST(total_spent AS FLOAT)), 0) as total FROM customers`;
+      const [totalCustomers] = await db`SELECT COUNT(*) as count FROM customers`;
+      const [totalOrders] = await db`SELECT COUNT(*) as count FROM orders`;
+      const [revenueResult] = await db`SELECT COALESCE(SUM(CAST(total_spent AS FLOAT)), 0) as total FROM customers`;
 
       const totalRevenue = Number(revenueResult?.total || 0);
       const customerCount = Number(totalCustomers?.count || 0);
@@ -64,7 +83,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const avgOrderValue = orderCount > 0 ? totalRevenue / orderCount : 0;
       const avgCLV = customerCount > 0 ? totalRevenue / customerCount : 0;
 
-      const [highRiskCustomers] = await sql`SELECT COUNT(*) as count FROM customers WHERE churn_risk = 'high'`;
+      const [highRiskCustomers] = await db`SELECT COUNT(*) as count FROM customers WHERE churn_risk = 'high'`;
       const churnRiskPercentage = customerCount > 0 ? (Number(highRiskCustomers?.count || 0) / customerCount) * 100 : 0;
 
       return res.json({
@@ -129,7 +148,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const customerId = req.query.customerId ? parseInt(req.query.customerId as string) : null;
 
       if (customerId) {
-        const [prediction] = await sql`
+        const [prediction] = await db`
           SELECT * FROM ml_predictions
           WHERE customer_id = ${customerId} AND prediction_type = 'clv'
           ORDER BY created_at DESC LIMIT 1
@@ -137,7 +156,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.json(prediction || null);
       }
 
-      const predictions = await sql`SELECT * FROM ml_predictions WHERE prediction_type = 'clv'`;
+      const predictions = await db`SELECT * FROM ml_predictions WHERE prediction_type = 'clv'`;
       return res.json(predictions);
     }
 
@@ -146,7 +165,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const customerId = req.query.customerId ? parseInt(req.query.customerId as string) : null;
 
       if (customerId) {
-        const [prediction] = await sql`
+        const [prediction] = await db`
           SELECT * FROM ml_predictions
           WHERE customer_id = ${customerId} AND prediction_type = 'churn'
           ORDER BY created_at DESC LIMIT 1
@@ -154,20 +173,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.json(prediction || null);
       }
 
-      const predictions = await sql`SELECT * FROM ml_predictions WHERE prediction_type = 'churn'`;
+      const predictions = await db`SELECT * FROM ml_predictions WHERE prediction_type = 'churn'`;
       return res.json(predictions);
     }
 
     // Route: GET /api/sales-metrics
     if (path === '/api/sales-metrics' && method === 'GET') {
-      const metrics = await sql`SELECT * FROM sales_metrics ORDER BY date`;
+      const metrics = await db`SELECT * FROM sales_metrics ORDER BY date`;
       return res.json(metrics);
     }
 
     // Route: GET /api/forecast/sales
     if (path === '/api/forecast/sales' && method === 'GET') {
       const days = parseInt(req.query.days as string) || 30;
-      const historicalMetrics = await sql`SELECT * FROM sales_metrics ORDER BY date`;
+      const historicalMetrics = await db`SELECT * FROM sales_metrics ORDER BY date`;
 
       // Generate simple forecast
       const forecast = [];
@@ -206,14 +225,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (productId) {
         const recommendations = type
-          ? await sql`SELECT * FROM product_recommendations WHERE product_id = ${productId} AND recommendation_type = ${type}`
-          : await sql`SELECT * FROM product_recommendations WHERE product_id = ${productId}`;
+          ? await db`SELECT * FROM product_recommendations WHERE product_id = ${productId} AND recommendation_type = ${type}`
+          : await db`SELECT * FROM product_recommendations WHERE product_id = ${productId}`;
         return res.json(recommendations);
       }
 
       const recommendations = type
-        ? await sql`SELECT * FROM product_recommendations WHERE recommendation_type = ${type} LIMIT 100`
-        : await sql`SELECT * FROM product_recommendations LIMIT 100`;
+        ? await db`SELECT * FROM product_recommendations WHERE recommendation_type = ${type} LIMIT 100`
+        : await db`SELECT * FROM product_recommendations LIMIT 100`;
       return res.json(recommendations);
     }
 
